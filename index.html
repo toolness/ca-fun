@@ -1,73 +1,8 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style>
-#constants {
-  display: block;
-  font-family: monospace;
-  white-space: pre;
-}
-</style>
 <title>Cellular Automata Fun</title>
 <h1>Cellular Automata Fun</h1>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.19/p5.js"></script>
 <script src="agent.js"></script>
 <script src="grid.js"></script>
-<script id="constants">
-var SQUARE_SIZE = 8;
-var WIDTH = 32;
-var EDGE_VALUE = 1;
-var SMOOTH_THRESHOLD = 0.6;
-var GENERATIONS = 3;
-var RANDOM_SEED = Date.now();
-
-</script>
-<script>
-var agent;
-
-function setup() {
-  randomSeed(RANDOM_SEED);
-  createCanvas(SQUARE_SIZE * WIDTH, SQUARE_SIZE * WIDTH);
-  background("black");
-
-  for (var i = 0; i < WIDTH; i++) {
-    grid.push([]);
-    for (var j = 0; j < WIDTH; j++) {
-      if (typeof(EDGE_VALUE) == 'number' && 
-          (i == 0 || j == 0 || i == WIDTH - 1 || j == WIDTH - 1)) {
-        grid[i].push(EDGE_VALUE);
-      } else {
-        grid[i].push(random() > 0.5 ? 1 : 0);
-      }
-    }
-  }
-
-  for (var k = 0; k < GENERATIONS; k++) {
-    grid = smoothGrid();
-  }
-
-  agent = Agent.placeRandomly();
-}
-
-function draw() {
-  var col;
-  var selX = Math.floor(mouseX / SQUARE_SIZE);
-  var selY = Math.floor(mouseY / SQUARE_SIZE);
-
-  for (var i = 0; i < WIDTH; i++) {
-    for (var j = 0; j < WIDTH; j++) {
-      if (grid[i][j]) {
-        col = color(255, 255, 255);
-      } else {
-        col = color(0, 0, 0);
-      }
-      if (i == selX && j == selY) {
-        col = color(0, 255, 0);
-      }
-      fill(col);
-      rect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
-    }
-  }
-
-  if (agent) agent.draw();
-}
-</script>
+<script src="main.js"></script>

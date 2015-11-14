@@ -1,32 +1,78 @@
-var grid = [];
-
-function getSquare(x, y) {
-  return grid[(WIDTH + x) % WIDTH][(WIDTH + y) % WIDTH];
+function Grid(options) {
+  this.width = options.width;
+  this.edgeValue = options.edgeValue;
+  this.squareSize = options.squareSize;
+  this._grid = this._createRandom();
 }
 
-function smoothGrid(grid) {
-  var sum;
-  var newGrid = [];
+Grid.EMPTY = Grid.prototype.EMPTY = 0;
 
-  for (var i = 0; i < WIDTH; i++) {
-    newGrid.push([]);
-    for (var j = 0; j < WIDTH; j++) {
-      sum = [
-        getSquare(i - 1, j - 1), // top-left
-        getSquare(i, j - 1),     // top
-        getSquare(i + 1, j - 1), // top-right
-        getSquare(i - 1, j),     // left
-        getSquare(i + 1, j),     // right
-        getSquare(i - 1, j + 1), // bottom-left
-        getSquare(i, j + 1),     // bottom
-        getSquare(i + 1, j + 1)  // bottom-right
-      ].reduce(function(prev, value) { return prev + value; }, 0);
-      if ((sum / 8) > SMOOTH_THRESHOLD) {
-        newGrid[i].push(1);
+Grid.FILLED = Grid.prototype.FILLED = 1;
+
+Grid.prototype.getSquare = function(x, y) {
+  var w = this.width;
+  return this._grid[(w + x) % w][(w + y) % w];
+};
+
+Grid.prototype._createRandom = function(edgeValue) {
+  var grid = [];
+
+  for (var i = 0; i < this.width; i++) {
+    grid.push([]);
+    for (var j = 0; j < this.width; j++) {
+      if (typeof(this.edgeValue) == 'number' && 
+          (i == 0 || j == 0 || i == this.width - 1 || j == this.width - 1)) {
+        grid[i].push(this.edgeValue);
       } else {
-        newGrid[i].push(0);
+        grid[i].push(random() > 0.5 ? this.FILLED : this.EMPTY);
       }
     }
   }
-  return newGrid;
-}
+
+  return grid;
+};
+
+Grid.prototype.smooth = function(threshold) {
+  var sum;
+  var newGrid = [];
+
+  for (var i = 0; i < this.width; i++) {
+    newGrid.push([]);
+    for (var j = 0; j < this.width; j++) {
+      sum = [
+        this.getSquare(i - 1, j - 1), // top-left
+        this.getSquare(i, j - 1),     // top
+        this.getSquare(i + 1, j - 1), // top-right
+        this.getSquare(i - 1, j),     // left
+        this.getSquare(i + 1, j),     // right
+        this.getSquare(i - 1, j + 1), // bottom-left
+        this.getSquare(i, j + 1),     // bottom
+        this.getSquare(i + 1, j + 1)  // bottom-right
+      ].reduce(function(prev, value) { return prev + value; }, 0);
+      if ((sum / 8) > threshold) {
+        newGrid[i].push(this.FILLED);
+      } else {
+        newGrid[i].push(this.EMPTY);
+      }
+    }
+  }
+
+  this._grid = newGrid;
+};
+
+Grid.prototype.draw = function() {
+  var col;
+
+  for (var i = 0; i < WIDTH; i++) {
+    for (var j = 0; j < WIDTH; j++) {
+      if (this._grid[i][j] == this.FILLED) {
+        col = color(255, 255, 255);
+      } else {
+        col = color(0, 0, 0);
+      }
+      fill(col);
+      rect(i * this.squareSize, j * this.squareSize,
+           this.squareSize, this.squareSize);
+    }
+  }
+};

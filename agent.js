@@ -1,4 +1,5 @@
-function Agent(x, y, col) {
+function Agent(grid, x, y, col) {
+  this.grid = grid;
   this.x = x;
   this.y = y;
   this.color = col || "blue";
@@ -18,26 +19,28 @@ Agent.prototype.move = function() {
     newY--;
   }
 
-  if (!getSquare(newX, newY)) {
+  if (this.grid.getSquare(newX, newY) == this.grid.EMPTY) {
     this.x = newX;
     this.y = newY;
   }
 };
 
 Agent.prototype.draw = function() {
+  var sqSize = this.grid.squareSize;
+
   if (frameCount % 5 == 0) this.move();
   fill(this.color);
-  rect(this.x * SQUARE_SIZE, this.y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+  rect(this.x * sqSize, this.y * sqSize, sqSize, sqSize);
 };
 
-Agent.placeRandomly = function() {
+Agent.placeRandomly = function(grid) {
   var x, y, i;
 
   for (i = 0; i < 1000; i++) {
-    x = Math.floor(random(0, WIDTH));
-    y = Math.floor(random(0, WIDTH));
-    if (!getSquare(x, y)) {
-      return new Agent(x, y);
+    x = Math.floor(random(0, grid.width));
+    y = Math.floor(random(0, grid.width));
+    if (grid.getSquare(x, y) == grid.EMPTY) {
+      return new Agent(grid, x, y);
     }
   }
 };
