@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Cellular Automata Fun</title>
+<h1>Cellular Automata Fun</h1>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.19/p5.js"></script>
+<script>
+var SQUARE_SIZE = 8;
+var WIDTH = 64;
+var EDGE_VALUE = 0;
+var SMOOTH_THRESHOLD = 0.4;
+var GENERATIONS = 3;
+var RANDOM_SEED = Date.now();
+
+var grid = [];
+
+function setup() {
+  randomSeed(RANDOM_SEED);
+  createCanvas(SQUARE_SIZE * WIDTH, SQUARE_SIZE * WIDTH);
+  background("black");
+
+  for (var i = 0; i < WIDTH; i++) {
+    grid.push([]);
+    for (var j = 0; j < WIDTH; j++) {
+      if (typeof(EDGE_VALUE) == 'number' && 
+          (i == 0 || j == 0 || i == WIDTH - 1 || j == WIDTH - 1)) {
+        grid[i].push(EDGE_VALUE);
+      } else {
+        grid[i].push(random() > 0.5 ? 1 : 0);
+      }
+    }
+  }
+
+  for (var k = 0; k < GENERATIONS; k++) {
+    smoothGrid();
+  }
+}
+
+function getSquare(x, y) {
+  return grid[(WIDTH + x) % WIDTH][(WIDTH + y) % WIDTH];
+}
+
+function smoothGrid() {
+  var sum;
+  var newGrid = [];
+
+  for (var i = 0; i < WIDTH; i++) {
+    newGrid.push([]);
+    for (var j = 0; j < WIDTH; j++) {
+      sum = [
+        getSquare(i - 1, j - 1), // top-left
+        getSquare(i, j - 1),     // top
+        getSquare(i + 1, j - 1), // top-right
+        getSquare(i - 1, j),     // left
+        getSquare(i + 1, j),     // right
+        getSquare(i - 1, j + 1), // bottom-left
+        getSquare(i, j + 1),     // bottom
+        getSquare(i + 1, j + 1)  // bottom-right
+      ].reduce(function(prev, value) { return prev + value; }, 0);
+      if ((sum / 8) > SMOOTH_THRESHOLD) {
+        newGrid[i].push(1);
+      } else {
+        newGrid[i].push(0);
+      }
+    }
+  }
+  grid = newGrid;
+}
+
+function draw() {
+  var col;
+
+  for (var i = 0; i < WIDTH; i++) {
+    for (var j = 0; j < WIDTH; j++) {
+      if (grid[i][j]) {
+        col = color(255, 255, 255);
+      } else {
+        col = color(0, 0, 0);
+      }
+      fill(col);
+      rect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+    }
+  }
+}
+</script>
