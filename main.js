@@ -23,6 +23,7 @@ function setup() {
   }
 
   agents.push(Agent.placeRandomly(grid));
+  agents[0].state = new AgentStateDrunk();
 }
 
 function draw() {

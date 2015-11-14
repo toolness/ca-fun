@@ -4,26 +4,11 @@ function Agent(grid, pInst, x, y, col) {
   this.x = x;
   this.y = y;
   this.color = col || "blue";
+  this.state = null;
 }
 
 Agent.prototype.move = function() {
-  var dir = Math.floor(this._pInst.random(0, 4));
-  var newX = this.x, newY = this.y;
-
-  if (dir == 0) {
-    newX++;
-  } else if (dir == 1) {
-    newX--;
-  } else if (dir == 2) {
-    newY++;
-  } else {
-    newY--;
-  }
-
-  if (this.grid.getSquare(newX, newY) == this.grid.EMPTY) {
-    this.x = newX;
-    this.y = newY;
-  }
+  if (this.state) this.state.move(this, this._pInst);
 };
 
 Agent.prototype.draw = function() {
@@ -45,5 +30,27 @@ Agent.placeRandomly = function(grid, pInst) {
     if (grid.getSquare(x, y) == grid.EMPTY) {
       return new Agent(grid, pInst, x, y);
     }
+  }
+};
+
+function AgentStateDrunk() {}
+
+AgentStateDrunk.prototype.move = function(agent, pInst) {
+  var dir = Math.floor(pInst.random(0, 4));
+  var newX = agent.x, newY = agent.y;
+
+  if (dir == 0) {
+    newX++;
+  } else if (dir == 1) {
+    newX--;
+  } else if (dir == 2) {
+    newY++;
+  } else {
+    newY--;
+  }
+
+  if (agent.grid.getSquare(newX, newY) == agent.grid.EMPTY) {
+    agent.x = newX;
+    agent.y = newY;
   }
 };
