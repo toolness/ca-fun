@@ -77,6 +77,8 @@ function smoothGrid() {
 
 function draw() {
   var col;
+  var selX = Math.floor(mouseX / SQUARE_SIZE);
+  var selY = Math.floor(mouseY / SQUARE_SIZE);
 
   for (var i = 0; i < WIDTH; i++) {
     for (var j = 0; j < WIDTH; j++) {
@@ -84,6 +86,9 @@ function draw() {
         col = color(255, 255, 255);
       } else {
         col = color(0, 0, 0);
+      }
+      if (i == selX && j == selY) {
+        col = color(0, 255, 0);
       }
       fill(col);
       rect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
