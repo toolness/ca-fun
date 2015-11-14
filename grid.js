@@ -4,6 +4,19 @@ function Grid(options) {
   this.squareSize = options.squareSize;
   this._pInst = options.pInst || window;
   this._grid = this._createRandom();
+
+  Object.defineProperties(this, {
+    mouseX: {
+      get: function() {
+        return Math.floor(this._pInst.mouseX / this.squareSize);
+      }
+    },
+    mouseY: {
+      get: function() {
+        return Math.floor(this._pInst.mouseY / this.squareSize);
+      }
+    }
+  });
 }
 
 Grid.EMPTY = Grid.prototype.EMPTY = 0;

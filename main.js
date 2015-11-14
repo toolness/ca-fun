@@ -22,14 +22,16 @@ function setup() {
     grid.smooth(SMOOTH_THRESHOLD);
   }
 
-  agents.push(Agent.placeRandomly(grid));
-  agents[0].state = new AgentStateDrunk();
+  var drunkard = Agent.placeRandomly(grid, 'blue');
+  drunkard.state = new AgentStateDrunk();
+  agents.push(drunkard);
+
+  var follower = Agent.placeRandomly(grid, 'violet');
+  follower.state = new AgentStateFollowMouse();
+  agents.push(follower);
 }
 
 function draw() {
-  var selX = Math.floor(mouseX / SQUARE_SIZE);
-  var selY = Math.floor(mouseY / SQUARE_SIZE);
-
   grid.draw();
 
   agents.forEach(function(agent) {
