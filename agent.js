@@ -4,11 +4,11 @@ function Agent(grid, x, y, col, pInst) {
   this.x = x;
   this.y = y;
   this.color = col || "blue";
-  this.state = null;
+  this._state = new AgentStateNull();
 }
 
 Agent.prototype.move = function() {
-  if (this.state) this.state.move(this, this._pInst);
+  if (this._state) this._state.move();
 };
 
 Agent.prototype.draw = function() {
@@ -17,6 +17,10 @@ Agent.prototype.draw = function() {
   if (this._pInst.frameCount % 5 == 0) this.move();
   this._pInst.fill(this.color);
   this._pInst.rect(this.x * sqSize, this.y * sqSize, sqSize, sqSize);
+};
+
+Agent.prototype.setState = function(stateConstructor) {
+  this._state = new stateConstructor(this, this._pInst);
 };
 
 Agent.placeRandomly = function(grid, col, pInst) {
@@ -33,46 +37,56 @@ Agent.placeRandomly = function(grid, col, pInst) {
   }
 };
 
-function AgentStateDrunk() {}
+function AgentStateNull() {
+  return {
+    move: function() {}
+  };
+}
 
-AgentStateDrunk.prototype.move = function(agent, pInst) {
-  var dir = Math.floor(pInst.random(0, 4));
-  var newX = agent.x, newY = agent.y;
+function AgentStateDrunk(agent, pInst) {
+  return {
+    move: function() {
+      var dir = Math.floor(pInst.random(0, 4));
+      var newX = agent.x, newY = agent.y;
 
-  if (dir == 0) {
-    newX++;
-  } else if (dir == 1) {
-    newX--;
-  } else if (dir == 2) {
-    newY++;
-  } else {
-    newY--;
-  }
+      if (dir == 0) {
+        newX++;
+      } else if (dir == 1) {
+        newX--;
+      } else if (dir == 2) {
+        newY++;
+      } else {
+        newY--;
+      }
 
-  if (agent.grid.getSquare(newX, newY) == agent.grid.EMPTY) {
-    agent.x = newX;
-    agent.y = newY;
-  }
-};
+      if (agent.grid.getSquare(newX, newY) == agent.grid.EMPTY) {
+        agent.x = newX;
+        agent.y = newY;
+      }
+    }
+  };
+}
 
-function AgentStateFollowMouse() {}
+function AgentStateFollowMouse(agent, pInst) {
+  return {
+    move: function() {
+      var grid = agent.grid;
+      var x = agent.x;
+      var y = agent.y;
 
-AgentStateFollowMouse.prototype.move = function(agent, pInst) {
-  var grid = agent.grid;
-  var x = agent.x;
-  var y = agent.y;
-
-  if (grid.mouseX > x &&
-      grid.getSquare(x + 1, y) == grid.EMPTY) {
-    agent.x++;
-  } else if (grid.mouseX < x &&
-             grid.getSquare(x - 1, y) == grid.EMPTY) {
-    agent.x--;
-  } else if (grid.mouseY > y &&
-             grid.getSquare(x, y + 1) == grid.EMPTY) {
-    agent.y++;
-  } else if (grid.mouseY < y &&
-             grid.getSquare(x, y - 1) == grid.EMPTY) {
-    agent.y--;
-  }
-};
+      if (grid.mouseX > x &&
+          grid.getSquare(x + 1, y) == grid.EMPTY) {
+        agent.x++;
+      } else if (grid.mouseX < x &&
+                 grid.getSquare(x - 1, y) == grid.EMPTY) {
+        agent.x--;
+      } else if (grid.mouseY > y &&
+                 grid.getSquare(x, y + 1) == grid.EMPTY) {
+        agent.y++;
+      } else if (grid.mouseY < y &&
+                 grid.getSquare(x, y - 1) == grid.EMPTY) {
+        agent.y--;
+      }
+    }
+  };
+}

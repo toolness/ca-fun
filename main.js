@@ -23,11 +23,11 @@ function setup() {
   }
 
   var drunkard = Agent.placeRandomly(grid, 'blue');
-  drunkard.state = new AgentStateDrunk();
+  drunkard.setState(AgentStateDrunk);
   agents.push(drunkard);
 
   var follower = Agent.placeRandomly(grid, 'violet');
-  follower.state = new AgentStateFollowMouse();
+  follower.setState(AgentStateFollowMouse);
   agents.push(follower);
 }
 
