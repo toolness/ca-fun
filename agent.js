@@ -58,20 +58,21 @@ AgentStateDrunk.prototype.move = function(agent, pInst) {
 function AgentStateFollowMouse() {}
 
 AgentStateFollowMouse.prototype.move = function(agent, pInst) {
-  var newX = agent.x, newY = agent.y;
+  var grid = agent.grid;
+  var x = agent.x;
+  var y = agent.y;
 
-  if (agent.grid.mouseX > agent.x) {
-    newX++;
-  } else if (agent.grid.mouseX < agent.x) {
-    newX--;
-  } else if (agent.grid.mouseY > agent.y) {
-    newY++;
-  } else if (agent.grid.mouseY < agent.y) {
-    newY--;
-  }
-
-  if (agent.grid.getSquare(newX, newY) == agent.grid.EMPTY) {
-    agent.x = newX;
-    agent.y = newY;
+  if (grid.mouseX > x &&
+      grid.getSquare(x + 1, y) == grid.EMPTY) {
+    agent.x++;
+  } else if (grid.mouseX < x &&
+             grid.getSquare(x - 1, y) == grid.EMPTY) {
+    agent.x--;
+  } else if (grid.mouseY > y &&
+             grid.getSquare(x, y + 1) == grid.EMPTY) {
+    agent.y++;
+  } else if (grid.mouseY < y &&
+             grid.getSquare(x, y - 1) == grid.EMPTY) {
+    agent.y--;
   }
 };
