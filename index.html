@@ -10,6 +10,8 @@
 <title>Cellular Automata Fun</title>
 <h1>Cellular Automata Fun</h1>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.19/p5.js"></script>
+<script src="agent.js"></script>
+<script src="grid.js"></script>
 <script id="constants">
 var SQUARE_SIZE = 8;
 var WIDTH = 32;
@@ -20,40 +22,7 @@ var RANDOM_SEED = Date.now();
 
 </script>
 <script>
-var grid = [];
 var agent;
-
-function Agent(x, y, col) {
-  this.x = x;
-  this.y = y;
-  this.color = col || "blue";
-}
-
-Agent.prototype.move = function() {
-  var dir = Math.floor(random(0, 4));
-  var newX = this.x, newY = this.y;
-
-  if (dir == 0) {
-    newX++;
-  } else if (dir == 1) {
-    newX--;
-  } else if (dir == 2) {
-    newY++;
-  } else {
-    newY--;
-  }
-
-  if (!getSquare(newX, newY)) {
-    this.x = newX;
-    this.y = newY;
-  }
-};
-
-Agent.prototype.draw = function() {
-  if (frameCount % 5 == 0) this.move();
-  fill(this.color);
-  rect(this.x * SQUARE_SIZE, this.y * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
-};
 
 function setup() {
   randomSeed(RANDOM_SEED);
@@ -76,50 +45,7 @@ function setup() {
     grid = smoothGrid();
   }
 
-  agent = placeAgentRandomly();
-}
-
-function placeAgentRandomly() {
-  var x, y, i;
-
-  for (i = 0; i < 1000; i++) {
-    x = Math.floor(random(0, WIDTH));
-    y = Math.floor(random(0, WIDTH));
-    if (!getSquare(x, y)) {
-      return new Agent(x, y);
-    }
-  }
-}
-
-function getSquare(x, y) {
-  return grid[(WIDTH + x) % WIDTH][(WIDTH + y) % WIDTH];
-}
-
-function smoothGrid(grid) {
-  var sum;
-  var newGrid = [];
-
-  for (var i = 0; i < WIDTH; i++) {
-    newGrid.push([]);
-    for (var j = 0; j < WIDTH; j++) {
-      sum = [
-        getSquare(i - 1, j - 1), // top-left
-        getSquare(i, j - 1),     // top
-        getSquare(i + 1, j - 1), // top-right
-        getSquare(i - 1, j),     // left
-        getSquare(i + 1, j),     // right
-        getSquare(i - 1, j + 1), // bottom-left
-        getSquare(i, j + 1),     // bottom
-        getSquare(i + 1, j + 1)  // bottom-right
-      ].reduce(function(prev, value) { return prev + value; }, 0);
-      if ((sum / 8) > SMOOTH_THRESHOLD) {
-        newGrid[i].push(1);
-      } else {
-        newGrid[i].push(0);
-      }
-    }
-  }
-  return newGrid;
+  agent = Agent.placeRandomly();
 }
 
 function draw() {
