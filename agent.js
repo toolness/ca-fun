@@ -12,11 +12,8 @@ Agent.prototype.move = function() {
 };
 
 Agent.prototype.draw = function() {
-  var sqSize = this.grid.squareSize;
-
   if (this._pInst.frameCount % 5 == 0) this.move();
-  this._pInst.fill(this.color);
-  this._pInst.rect(this.x * sqSize, this.y * sqSize, sqSize, sqSize);
+  this.grid.drawSquare(this.x, this.y, this.color);
 };
 
 Agent.prototype.setState = function(stateConstructor) {

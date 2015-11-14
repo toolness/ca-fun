@@ -6,6 +6,7 @@ function Grid(options) {
   this._grid = this._createRandom();
   this._lastMouseX = 0;
   this._lastMouseY = 0;
+  this._drawnSquares = [];
 
   Object.defineProperties(this, {
     mouseX: {
@@ -92,19 +93,43 @@ Grid.prototype.smooth = function(threshold) {
   this._grid = newGrid;
 };
 
-Grid.prototype.draw = function() {
+Grid.prototype.drawSquare = function(x, y, col) {
+  this._drawnSquares.push({x: x, y: y});
+  this._drawSquare(x, y, col);
+};
+
+Grid.prototype._drawSquare = function(x, y, col) {
+  this._pInst.fill(col);
+  this._pInst.rect(x * this.squareSize, y * this.squareSize,
+                   this.squareSize, this.squareSize);
+};
+
+Grid.prototype._drawBaseSquare = function(x, y) {
   var col;
 
+  if (this._grid[x][y] == this.FILLED) {
+    col = this._pInst.color(255, 255, 255);
+  } else {
+    col = this._pInst.color(0, 0, 0);
+  }
+  this._drawSquare(x, y, col);
+};
+
+Grid.prototype._drawComplete = function() {
   for (var i = 0; i < WIDTH; i++) {
     for (var j = 0; j < WIDTH; j++) {
-      if (this._grid[i][j] == this.FILLED) {
-        col = this._pInst.color(255, 255, 255);
-      } else {
-        col = this._pInst.color(0, 0, 0);
-      }
-      fill(col);
-      this._pInst.rect(i * this.squareSize, j * this.squareSize,
-                       this.squareSize, this.squareSize);
+      this._drawBaseSquare(i, j);
     }
+  }
+};
+
+Grid.prototype.draw = function() {
+  if (this._pInst.frameCount == 1) {
+    this._drawComplete();
+  } else {
+    this._drawnSquares.forEach(function(square) {
+      this._drawBaseSquare(square.x, square.y);
+    }, this);
+    this._drawnSquares = [];
   }
 };
