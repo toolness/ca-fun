@@ -40,7 +40,7 @@ function setup() {
   }
 
   for (var k = 0; k < GENERATIONS; k++) {
-    smoothGrid();
+    grid = smoothGrid();
   }
 }
 
@@ -48,7 +48,7 @@ function getSquare(x, y) {
   return grid[(WIDTH + x) % WIDTH][(WIDTH + y) % WIDTH];
 }
 
-function smoothGrid() {
+function smoothGrid(grid) {
   var sum;
   var newGrid = [];
 
@@ -72,7 +72,7 @@ function smoothGrid() {
       }
     }
   }
-  grid = newGrid;
+  return newGrid;
 }
 
 function draw() {
