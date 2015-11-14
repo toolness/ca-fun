@@ -4,16 +4,34 @@ function Grid(options) {
   this.squareSize = options.squareSize;
   this._pInst = options.pInst || window;
   this._grid = this._createRandom();
+  this._lastMouseX = 0;
+  this._lastMouseY = 0;
 
   Object.defineProperties(this, {
     mouseX: {
       get: function() {
-        return Math.floor(this._pInst.mouseX / this.squareSize);
+        var x = this._lastMouseX;
+
+        if (this._pInst.mouseIsPressed) {
+          x = this._pInst.mouseX;
+        } else if (this._pInst.touchIsDown) {
+          x = this._pInst.touchX;
+        }
+        this._lastMouseX = x;
+        return Math.floor(x / this.squareSize);
       }
     },
     mouseY: {
       get: function() {
-        return Math.floor(this._pInst.mouseY / this.squareSize);
+        var y = this._lastMouseY;
+
+        if (this._pInst.mouseIsPressed) {
+          y = this._pInst.mouseY;
+        } else if (this._pInst.touchIsDown) {
+          y = this._pInst.touchY;
+        }
+        this._lastMouseY = y;
+        return Math.floor(y / this.squareSize);
       }
     }
   });
