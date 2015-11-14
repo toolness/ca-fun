@@ -2,6 +2,7 @@ function Grid(options) {
   this.width = options.width;
   this.edgeValue = options.edgeValue;
   this.squareSize = options.squareSize;
+  this._pInst = options.pInst || window;
   this._grid = this._createRandom();
 }
 
@@ -24,7 +25,7 @@ Grid.prototype._createRandom = function(edgeValue) {
           (i == 0 || j == 0 || i == this.width - 1 || j == this.width - 1)) {
         grid[i].push(this.edgeValue);
       } else {
-        grid[i].push(random() > 0.5 ? this.FILLED : this.EMPTY);
+        grid[i].push(this._pInst.random() > 0.5 ? this.FILLED : this.EMPTY);
       }
     }
   }
@@ -66,13 +67,13 @@ Grid.prototype.draw = function() {
   for (var i = 0; i < WIDTH; i++) {
     for (var j = 0; j < WIDTH; j++) {
       if (this._grid[i][j] == this.FILLED) {
-        col = color(255, 255, 255);
+        col = this._pInst.color(255, 255, 255);
       } else {
-        col = color(0, 0, 0);
+        col = this._pInst.color(0, 0, 0);
       }
       fill(col);
-      rect(i * this.squareSize, j * this.squareSize,
-           this.squareSize, this.squareSize);
+      this._pInst.rect(i * this.squareSize, j * this.squareSize,
+                       this.squareSize, this.squareSize);
     }
   }
 };
