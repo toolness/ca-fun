@@ -29,6 +29,10 @@ function setup() {
   var follower = Agent.placeRandomly(grid, 'violet');
   follower.setState(AgentStateFollowMouse);
   agents.push(follower);
+
+  var planningFollower = Agent.placeRandomly(grid, 'red');
+  planningFollower.setState(AgentStateFollowMouseWithPlanning);
+  agents.push(planningFollower);
 }
 
 function draw() {

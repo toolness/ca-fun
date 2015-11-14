@@ -90,3 +90,100 @@ function AgentStateFollowMouse(agent, pInst) {
     }
   };
 }
+
+function AgentStateFollowMouseWithPlanning(agent, pInst) {
+  var grid = agent.grid;
+  var goalX = 0;
+  var goalY = 0;
+  var plan = [];
+
+  function distanceToGoal(x, y) {
+    return Math.abs(goalX - x) + Math.abs(goalY - y);
+  }
+
+  function makeNewPlan() {
+    var plans, bestPlan, exploredSquares;
+
+    function explorePlan(plan) {
+      var x, y;
+
+      function exploreSquare(x, y) {
+        if (grid.getSquare(x, y) != grid.EMPTY) return;
+        if (exploredSquares[x][y]) return;
+
+        exploredSquares[x][y] = true;
+        plans.push({
+          minDistanceToGoal: distanceToGoal(x, y),
+          path: plan.path.concat({x: x, y: y})
+        });
+      }
+
+      if (plan.path.length == 0) {
+        x = agent.x;
+        y = agent.y;
+      } else {
+        x = plan.path[plan.path.length-1].x;
+        y = plan.path[plan.path.length-1].y;
+      }
+
+      exploreSquare(x + 1, y);
+      exploreSquare(x - 1, y);
+      exploreSquare(x, y + 1);
+      exploreSquare(x, y - 1);
+    }
+
+    goalX = grid.mouseX;
+    goalY = grid.mouseY;
+
+    plans = [{
+      minDistanceToGoal: distanceToGoal(agent.x, agent.y),
+      path: []
+    }];
+
+    exploredSquares = [];
+    for (var i = 0; i < grid.width; i++) {
+      exploredSquares.push([]);
+      for (var j = 0; j < grid.width; j++) {
+        exploredSquares[i].push(false);
+      }
+    }
+
+    while (plans.length) {
+      // Ideally we'd use a priority queue here.
+      plans.sort(function(a, b) {
+        var totalA = a.path.length + a.minDistanceToGoal;
+        var totalB = b.path.length + b.minDistanceToGoal;
+
+        return totalA - totalB;
+      });
+
+      bestPlan = plans.shift();
+      if (bestPlan.minDistanceToGoal == 0) {
+        break;
+      }
+      explorePlan(bestPlan);
+    }
+
+    plan = bestPlan.path;
+  }
+
+  function continueFollowingPlan() {
+    var coord;
+
+    if (plan.length == 0) return;
+
+    coord = plan.shift();
+    agent.x = coord.x;
+    agent.y = coord.y;
+  }
+
+  makeNewPlan();
+
+  return {
+    move: function() {
+      if (goalX != grid.mouseX || goalY != grid.mouseY)
+        makeNewPlan();
+      continueFollowingPlan();
+    }
+  };
+}
