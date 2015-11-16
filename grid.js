@@ -3,7 +3,6 @@ function Grid(options) {
   this.edgeValue = options.edgeValue;
   this.squareSize = options.squareSize;
   this._pInst = options.pInst || window;
-  this._grid = this._createRandom();
   this._lastMouseX = 0;
   this._lastMouseY = 0;
   this._drawnSquares = [];
@@ -36,6 +35,8 @@ function Grid(options) {
       }
     }
   });
+
+  this.clear();
 }
 
 Grid.EMPTY = Grid.prototype.EMPTY = 0;
@@ -47,7 +48,25 @@ Grid.prototype.getSquare = function(x, y) {
   return this._grid[(w + x) % w][(w + y) % w];
 };
 
-Grid.prototype._createRandom = function(edgeValue) {
+Grid.prototype.clear = function() {
+  var grid = [];
+
+  for (var i = 0; i < this.width; i++) {
+    grid.push([]);
+    for (var j = 0; j < this.width; j++) {
+      grid[i].push(this.EMPTY);
+    }
+  }
+
+  this._grid = grid;
+};
+
+Grid.prototype.createCanvas = function() {
+  this._pInst.createCanvas(this.width * this.squareSize,
+                           this.width * this.squareSize);
+};
+
+Grid.prototype.createRandom = function() {
   var grid = [];
 
   for (var i = 0; i < this.width; i++) {
@@ -62,7 +81,7 @@ Grid.prototype._createRandom = function(edgeValue) {
     }
   }
 
-  return grid;
+  this._grid = grid;
 };
 
 Grid.prototype.smooth = function(threshold) {

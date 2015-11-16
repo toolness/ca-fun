@@ -9,14 +9,15 @@ var agents = [];
 
 function setup() {
   randomSeed(RANDOM_SEED);
-  createCanvas(SQUARE_SIZE * WIDTH, SQUARE_SIZE * WIDTH);
-  background("black");
 
   grid = new Grid({
     width: WIDTH,
     edgeValue: Grid.FILLED,
     squareSize: SQUARE_SIZE
   });
+
+  grid.createCanvas();
+  grid.createRandom();
 
   for (var k = 0; k < GENERATIONS; k++) {
     grid.smooth(SMOOTH_THRESHOLD);
