@@ -135,8 +135,8 @@ Grid.prototype._drawBaseSquare = function(x, y) {
 };
 
 Grid.prototype._drawComplete = function() {
-  for (var i = 0; i < WIDTH; i++) {
-    for (var j = 0; j < WIDTH; j++) {
+  for (var i = 0; i < this.width; i++) {
+    for (var j = 0; j < this.width; j++) {
       this._drawBaseSquare(i, j);
     }
   }
