@@ -99,7 +99,7 @@ function AgentStateFollowMouseWithPlanning(agent, pInst) {
   }
 
   function makeNewPlan() {
-    var plans, bestPlan, exploredSquares;
+    var plans, bestPlan, nextPlan, exploredSquares;
 
     function explorePlan(plan) {
       var x, y;
@@ -137,6 +137,7 @@ function AgentStateFollowMouseWithPlanning(agent, pInst) {
       path: []
     }];
 
+    bestPlan = plans[0];
     exploredSquares = [];
     for (var i = 0; i < grid.width; i++) {
       exploredSquares.push([]);
@@ -154,11 +155,15 @@ function AgentStateFollowMouseWithPlanning(agent, pInst) {
         return totalA - totalB;
       });
 
-      bestPlan = plans.shift();
-      if (bestPlan.minDistanceToGoal == 0) {
-        break;
+      nextPlan = plans.shift();
+
+      if (bestPlan.minDistanceToGoal > nextPlan.minDistanceToGoal) {
+        bestPlan = nextPlan;
+        if (bestPlan.minDistanceToGoal == 0) {
+          break;
+        }
       }
-      explorePlan(bestPlan);
+      explorePlan(nextPlan);
     }
 
     plan = bestPlan.path;
