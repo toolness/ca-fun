@@ -45,7 +45,7 @@ function drawLine(grid, x1, y1, x2, y2, col) {
   var xDir = (x2 >= x1) ? 1 : -1;
   var yDir = (y2 >= y1) ? 1 : -1;
   var isObstructed = false;
-  var ensureNotObstructed = function() {
+  var ensureNotObstructed = function(x, y) {
     if (grid.getSquare(Math.floor(x), Math.floor(y)) === grid.EMPTY) {
       return true;
     }
@@ -54,25 +54,25 @@ function drawLine(grid, x1, y1, x2, y2, col) {
   }
 
   if (Math.abs(slope) === Infinity) {
-    while (y != y2 && ensureNotObstructed()) {
+    while (y != y2 && ensureNotObstructed(x, y)) {
       grid.drawSquare(x, y, col);
       y += yDir;
     }
   } else if (slope <= 1) {
-    while (x != x2 && ensureNotObstructed()) {
+    while (x != x2 && ensureNotObstructed(x, y)) {
       grid.drawSquare(x, Math.floor(y), col);
       y += slope * yDir;
       x += xDir;
     }
   } else if (slope > 1) {
-    while (y != y2 && ensureNotObstructed()) {
+    while (y != y2 && ensureNotObstructed(x, y)) {
       grid.drawSquare(Math.floor(x), y, col);
       x += 1 / slope * xDir;
       y += yDir;
     }
   }
 
-  if (!isObstructed) {
+  if (!isObstructed && ensureNotObstructed(x2, y2)) {
     grid.drawSquare(x2, y2, col);
   }
 }
