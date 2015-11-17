@@ -18,10 +18,15 @@ function setup() {
   var i;
 
   grid = new Grid({
-    width: 32,
+    width: 48,
     squareSize: 8
   });
   grid.createCanvas();
+
+  do {
+    grid.createRandom();
+    for (i = 0; i < 3; i++) grid.smooth(0.6);
+  } while (grid.getSquare(grid.width / 2, grid.width / 2) === grid.FILLED);
 
   for (i = 0; i < grid.width; i++)
     lineEndpoints.push([i, 0]);
@@ -31,37 +36,45 @@ function setup() {
     lineEndpoints.push([i, grid.width - 1]);
   for (i = grid.width - 1; i > 0; i--)
     lineEndpoints.push([0, i]);
-
-  frameRate(30);
 }
 
-function drawLine(grid, x1, y1, x2, y2) {
+function drawLine(grid, x1, y1, x2, y2, col) {
   var slope = Math.abs((y1 - y2) / (x1 - x2));
   var y = y1;
   var x = x1;
   var xDir = (x2 >= x1) ? 1 : -1;
   var yDir = (y2 >= y1) ? 1 : -1;
+  var isObstructed = false;
+  var ensureNotObstructed = function() {
+    if (grid.getSquare(Math.floor(x), Math.floor(y)) === grid.EMPTY) {
+      return true;
+    }
+    isObstructed = true;
+    return false;
+  }
 
   if (Math.abs(slope) === Infinity) {
-    while (y != y2) {
-      grid.drawSquare(x, y, "white");
+    while (y != y2 && ensureNotObstructed()) {
+      grid.drawSquare(x, y, col);
       y += yDir;
     }
   } else if (slope <= 1) {
-    while (x != x2) {
-      grid.drawSquare(x, Math.floor(y), "white");
+    while (x != x2 && ensureNotObstructed()) {
+      grid.drawSquare(x, Math.floor(y), col);
       y += slope * yDir;
       x += xDir;
     }
   } else if (slope > 1) {
-    while (y != y2) {
-      grid.drawSquare(Math.floor(x), y, "white");
+    while (y != y2 && ensureNotObstructed()) {
+      grid.drawSquare(Math.floor(x), y, col);
       x += 1 / slope * xDir;
       y += yDir;
     }
   }
 
-  grid.drawSquare(x2, y2, "white");
+  if (!isObstructed) {
+    grid.drawSquare(x2, y2, col);
+  }
 }
 
 function draw() {
@@ -69,6 +82,7 @@ function draw() {
   var endpoint = lineEndpoints[i];
 
   grid.draw();
-  drawLine(grid, grid.width / 2, grid.width / 2, endpoint[0], endpoint[1]);
+  drawLine(grid, grid.width / 2, grid.width / 2, endpoint[0], endpoint[1],
+           "crimson");
 }
 </script>
