@@ -70,8 +70,8 @@ Grid.prototype.clear = function() {
 };
 
 Grid.prototype.createCanvas = function() {
-  this._pInst.createCanvas(this.width * this.squareSize,
-                           this.width * this.squareSize);
+  this._pInst.createCanvas(this.width * this.squareSize + 1,
+                           this.width * this.squareSize + 1);
 };
 
 Grid.prototype.createRandom = function() {
