@@ -59,6 +59,7 @@ Grid.prototype.clear = function() {
   }
 
   this._grid = grid;
+  this._needsFullRedraw = true;
 };
 
 Grid.prototype.createCanvas = function() {
@@ -82,6 +83,7 @@ Grid.prototype.createRandom = function() {
   }
 
   this._grid = grid;
+  this._needsFullRedraw = true;
 };
 
 Grid.prototype.smooth = function(threshold) {
@@ -110,6 +112,7 @@ Grid.prototype.smooth = function(threshold) {
   }
 
   this._grid = newGrid;
+  this._needsFullRedraw = true;
 };
 
 Grid.prototype.drawSquare = function(x, y, col) {
@@ -143,8 +146,10 @@ Grid.prototype._drawComplete = function() {
 };
 
 Grid.prototype.draw = function() {
-  if (this._pInst.frameCount == 1) {
+  if (this._needsFullRedraw) {
+    console.log("FULL REDRAW");
     this._drawComplete();
+    this._needsFullRedraw = false;
   } else {
     this._drawnSquares.forEach(function(square) {
       this._drawBaseSquare(square.x, square.y);
