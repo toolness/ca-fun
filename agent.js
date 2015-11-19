@@ -123,10 +123,10 @@ function AgentStateFollowMouseWithPlanning(agent, pInst) {
         y = plan.path[plan.path.length-1].y;
       }
 
-      exploreSquare(x + 1, y);
-      exploreSquare(x - 1, y);
-      exploreSquare(x, y + 1);
-      exploreSquare(x, y - 1);
+      if (x < grid.width - 1) exploreSquare(x + 1, y);
+      if (x > 0) exploreSquare(x - 1, y);
+      if (y < grid.width - 1) exploreSquare(x, y + 1);
+      if (y > 0) exploreSquare(x, y - 1);
     }
 
     goalX = grid.mouseX;
