@@ -1,18 +1,19 @@
 var SQUARE_SIZE = 8;
 var WIDTH = 32;
 var SMOOTH_THRESHOLD = 0.6;
-var GENERATIONS = 3;
 
 var seed;
 var grid;
 var agents = [];
 
 function regenerate() {
+  var generations = parseInt(document.getElementById("generations").value);
+
   randomSeed(seed);
 
   grid.createRandom();
 
-  for (var k = 0; k < GENERATIONS; k++) {
+  for (var k = 0; k < generations; k++) {
     grid.smooth(SMOOTH_THRESHOLD);
   }
 
