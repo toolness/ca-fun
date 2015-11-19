@@ -16,6 +16,8 @@ function regenerate() {
     grid.smooth(SMOOTH_THRESHOLD);
   }
 
+  grid.makeWellConnected();
+
   agents = [];
 
   var drunkard = Agent.placeRandomly(grid, 'blue');

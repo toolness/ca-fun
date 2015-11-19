@@ -48,6 +48,13 @@ Grid.prototype.getSquare = function(x, y) {
   return this._grid[(w + x) % w][(w + y) % w];
 };
 
+Grid.prototype.setSquare = function(x, y, value) {
+  if (this._grid[x][y] !== value) {
+    this._grid[x][y] = value;
+    this._drawnSquares.push({x: x, y: y});
+  }
+};
+
 Grid.prototype.clear = function() {
   var grid = [];
 
@@ -84,6 +91,99 @@ Grid.prototype.createRandom = function() {
 
   this._grid = grid;
   this._needsFullRedraw = true;
+};
+
+Grid.prototype._connectOneGroup = function(groups, groupEdges) {
+  var explored = [];
+  var myGroup = groupEdges.sort(function(a, b) {
+    return a.edges.length - b.edges.length;
+  })[0];
+  var visitSquare = function(x, y, basePath) {
+    if (explored[x][y]) return;
+    if (groups[x][y] === myGroup.id) return;
+    explored[x][y] = true;
+    paths.push(basePath.concat([[x, y]]));
+  };
+  var grid = this._grid;
+  var paths = myGroup.edges.map(function(coord) {
+    return [coord];
+  });
+  var path;
+  var x, y;
+
+  for (var i = 0; i < this.width; i++) {
+    explored.push([]);
+    for (var j = 0; j < this.width; j++) {
+      explored[i].push(false);
+    }
+  }
+
+  myGroup.edges.forEach(function(coord) {
+    explored[coord[0]][coord[1]] = true;
+  });
+
+  while (paths.length) {
+    path = paths.shift();
+    x = path[path.length - 1][0];
+    y = path[path.length - 1][1];
+    if (grid[x][y] === this.EMPTY && groups[x][y] !== myGroup.id) {
+      path.slice(0, -1).forEach(function(coord) {
+        this.setSquare(coord[0], coord[1], this.EMPTY);
+      }, this);
+      return;
+    }
+    if (x > 0) visitSquare(x - 1, y, path);
+    if (x < this.width - 1) visitSquare(x + 1, y, path);
+    if (y > 0) visitSquare(x, y - 1, path);
+    if (y < this.width - 1) visitSquare(x, y + 1, path);
+  }
+};
+
+Grid.prototype.makeWellConnected = function() {
+  var self = this;
+  var grid = this._grid;
+  var groups = [];
+  var groupEdges = [];
+  var numGroups = 0;
+  var i, j;
+  var needsGroupId = function(x, y) {
+    return grid[x][y] === self.EMPTY && groups[x][y] === undefined;
+  };
+  var visitSquare = function(x, y, groupId) {
+    if (needsGroupId(x, y)) {
+      explore(x, y, groupId);
+    } else if (grid[x][y] === self.FILLED) {
+      groupEdges[groupId].edges.push([x, y]);
+    }
+  };
+  var explore = function(x, y, groupId) {
+    groups[x][y] = groupId;
+    if (x > 0) visitSquare(x - 1, y, groupId);
+    if (x < self.width - 1) visitSquare(x + 1, y, groupId);
+    if (y > 0) visitSquare(x, y - 1, groupId);
+    if (y < self.width - 1) visitSquare(x, y + 1, groupId);
+  };
+
+  for (i = 0; i < this.width; i++) {
+    groups.push([]);
+    for (j = 0; j < this.width; j++) {
+      groups[i].push(undefined);
+    }
+  }
+
+  for (i = 0; i < this.width; i++) {
+    for (j = 0; j < this.width; j++) {
+      if (needsGroupId(i, j)) {
+        groupEdges.push({id: numGroups, edges: []});
+        explore(i, j, numGroups++);
+      }
+    }
+  }
+
+  if (numGroups > 1) {
+    this._connectOneGroup(groups, groupEdges);
+    this.makeWellConnected();
+  }
 };
 
 Grid.prototype.smooth = function(threshold) {
