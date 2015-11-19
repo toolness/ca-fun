@@ -17,7 +17,8 @@ function regenerate() {
     grid.smooth(SMOOTH_THRESHOLD);
   }
 
-  grid.makeWellConnected();
+  if (document.getElementById("connected").checked)
+    grid.makeWellConnected();
 
   agents = [];
 

@@ -17,13 +17,23 @@ html, body {
   Click or tap anywhere on the map to make some agents find it.
 </p>
 <footer>
+<h2>Map Options</h2>
+<p>
+  <label for="generations">Map Smoothness</label>
+  <input id="generations" type="range" min="1" max="5" value="3" step="1">
+</p>
+<p>
+  <label>
+    <input id="connected" type="checkbox" checked>
+    Well-Connected Map
+  </label>
+</p>
+<p>
+</p>
+<p><button id="regenerate">Regenerate Map</button></p>
 <p>
   Learn more at <a href="http://github.com/toolness/ca-fun">GitHub</a>.
 </p>
-<p>
-  Map Smoothness: <input id="generations" type="range" min="1" max="5" value="3" step="1">
-</p>
-<p><button id="regenerate">Regenerate Map</button></p>
 </footer>
 <script src="p5.js"></script>
 <script src="agent.js"></script>
