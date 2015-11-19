@@ -3,13 +3,12 @@ var WIDTH = 32;
 var SMOOTH_THRESHOLD = 0.6;
 var GENERATIONS = 3;
 
+var seed;
 var grid;
 var agents = [];
 
 function regenerate() {
-  var RANDOM_SEED = Date.now();
-
-  randomSeed(RANDOM_SEED);
+  randomSeed(seed);
 
   grid.createRandom();
 
@@ -40,6 +39,19 @@ function setup() {
   });
 
   grid.createCanvas();
+
+  var seedMatch = window.location.search.match(/[?&]seed=(\d+)/);
+  if (seedMatch) {
+    seed = parseInt(seedMatch[1]);
+  } else {
+    seed = Date.now();
+  }
+
+  document.getElementById("regenerate").onclick = function() {
+    seed = Date.now();
+    regenerate();
+  };
+
   regenerate();
 }
 
