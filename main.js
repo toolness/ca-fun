@@ -1,5 +1,5 @@
 var SQUARE_SIZE = 8;
-var WIDTH = 32;
+var DEFAULT_WIDTH = 32;
 var SMOOTH_THRESHOLD = 0.6;
 
 var seed;
@@ -35,9 +35,26 @@ function regenerate() {
   agents.push(planningFollower);
 }
 
+// http://stackoverflow.com/a/901144
+function getQuerystringParam(name, defaultValue) {
+  name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+  var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+  var results = regex.exec(location.search);
+  return results === null
+         ? (defaultValue || "")
+         : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function getIntQuerystringParam(name, defaultValue) {
+  var result = parseInt(getQuerystringParam(name));
+  if (isNaN(result))
+    return defaultValue;
+  return result;
+}
+
 function setup() {
   grid = new Grid({
-    width: WIDTH,
+    width: getIntQuerystringParam('width', DEFAULT_WIDTH),
     edgeValue: Grid.FILLED,
     squareSize: SQUARE_SIZE
   });
@@ -48,12 +65,7 @@ function setup() {
   // so it's at the bottom of the page.
   document.body.appendChild(document.querySelector("footer"));
 
-  var seedMatch = window.location.search.match(/[?&]seed=(\d+)/);
-  if (seedMatch) {
-    seed = parseInt(seedMatch[1]);
-  } else {
-    seed = Date.now();
-  }
+  seed = getIntQuerystringParam('seed', Date.now());
 
   document.getElementById("regenerate").onclick = function() {
     seed = Date.now();
