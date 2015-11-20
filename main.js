@@ -69,8 +69,16 @@ function setup() {
 
   seed = getIntQuerystringParam('seed', Date.now());
 
+  var seedField = document.getElementById('random-seed');
+  seedField.value = seed;
+
   document.getElementById("regenerate").onclick = function() {
-    seed = Date.now();
+    if (document.getElementById("new-seed").checked) {
+      seed = Date.now();
+      seedField.value = seed;
+    } else {
+      seed = parseInt(seedField.value);
+    }
     regenerate();
   };
 

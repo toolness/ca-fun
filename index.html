@@ -23,18 +23,26 @@ body {
 <footer>
 <h2>Map Options</h2>
 <p>
-  <label for="generations">Map Smoothness</label>
+  <label for="generations">Map smoothness</label>
   <input id="generations" type="range" min="1" max="5" value="3" step="1">
+</p>
+<p>
+  <label for="random-seed">Random seed</label>
+  <input id="random-seed" type="number">
 </p>
 <p>
   <label>
     <input id="connected" type="checkbox" checked>
-    Well-Connected Map
+    Well-connected map
   </label>
 </p>
 <p>
+  <label>
+    <input id="new-seed" type="checkbox" checked>
+    Generate new random seed
+  </label>
 </p>
-<p><button id="regenerate">Regenerate Map</button></p>
+<p><button id="regenerate">Regenerate map</button></p>
 <p>
   Learn more at <a href="http://github.com/toolness/ca-fun">GitHub</a>.
 </p>
