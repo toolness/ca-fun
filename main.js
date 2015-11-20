@@ -4,6 +4,7 @@ var SMOOTH_THRESHOLD = 0.6;
 
 var seed;
 var grid;
+var planningFollower;
 var agents = [];
 
 function regenerate() {
@@ -30,7 +31,7 @@ function regenerate() {
   follower.setState(AgentStateFollowMouse);
   agents.push(follower);
 
-  var planningFollower = Agent.placeRandomly(grid, 'red');
+  planningFollower = Agent.placeRandomly(grid, 'red');
   planningFollower.setState(AgentStateFollowMouseWithPlanning);
   agents.push(planningFollower);
 }
@@ -55,6 +56,7 @@ function getIntQuerystringParam(name, defaultValue) {
 function setup() {
   grid = new Grid({
     width: getIntQuerystringParam('width', DEFAULT_WIDTH),
+    viewportWidth: 32,
     edgeValue: Grid.FILLED,
     squareSize: SQUARE_SIZE
   });
@@ -76,6 +78,11 @@ function setup() {
 }
 
 function draw() {
+  grid.setViewportTopLeft(
+    Math.floor(planningFollower.y / grid.viewportWidth) * grid.viewportWidth,
+    Math.floor(planningFollower.x / grid.viewportWidth) * grid.viewportWidth
+  );
+
   grid.draw();
 
   agents.forEach(function(agent) {

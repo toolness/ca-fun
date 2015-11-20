@@ -1,5 +1,8 @@
 function Grid(options) {
   this.width = options.width;
+  this.viewportWidth = options.viewportWidth || this.width;
+  this.viewportTop = 0;
+  this.viewportLeft = 0;
   this.edgeValue = options.edgeValue;
   this.squareSize = options.squareSize;
   this._pInst = options.pInst || window;
@@ -11,11 +14,12 @@ function Grid(options) {
     mouseX: {
       get: function() {
         var x = this._lastMouseX;
+        var leftOfs = this.viewportLeft * this.squareSize;
 
         if (this._pInst.mouseIsPressed) {
-          x = this._pInst.mouseX;
+          x = this._pInst.mouseX + leftOfs;
         } else if (this._pInst.touchIsDown) {
-          x = this._pInst.touchX;
+          x = this._pInst.touchX + leftOfs;
         }
         this._lastMouseX = x;
         return Math.floor(x / this.squareSize);
@@ -24,11 +28,12 @@ function Grid(options) {
     mouseY: {
       get: function() {
         var y = this._lastMouseY;
+        var topOfs = this.viewportTop * this.squareSize;
 
         if (this._pInst.mouseIsPressed) {
-          y = this._pInst.mouseY;
+          y = this._pInst.mouseY + topOfs;
         } else if (this._pInst.touchIsDown) {
-          y = this._pInst.touchY;
+          y = this._pInst.touchY + topOfs;
         }
         this._lastMouseY = y;
         return Math.floor(y / this.squareSize);
@@ -70,8 +75,8 @@ Grid.prototype.clear = function() {
 };
 
 Grid.prototype.createCanvas = function() {
-  this._pInst.createCanvas(this.width * this.squareSize + 1,
-                           this.width * this.squareSize + 1);
+  this._pInst.createCanvas(this.viewportWidth * this.squareSize + 1,
+                           this.viewportWidth * this.squareSize + 1);
 };
 
 Grid.prototype.createRandom = function() {
@@ -215,12 +220,37 @@ Grid.prototype.smooth = function(threshold) {
   this._needsFullRedraw = true;
 };
 
+Grid.prototype.setViewportTopLeft = function(top, left) {
+  if (top + this.viewportWidth > this.width) {
+    top = this.width - this.viewportWidth;
+  }
+  if (left + this.viewportWidth > this.width) {
+    left = this.width - this.viewportWidth;
+  }
+  if (top < 0) top = 0;
+  if (left < 0) left = 0;
+
+  if (top === this.viewportTop && left === this.viewportLeft) return;
+
+  this.viewportTop = top;
+  this.viewportLeft = left;
+  this._needsFullRedraw = true;
+};
+
 Grid.prototype.drawSquare = function(x, y, col) {
   this._drawnSquares.push({x: x, y: y});
   this._drawSquare(x, y, col);
 };
 
 Grid.prototype._drawSquare = function(x, y, col) {
+  x -= this.viewportLeft;
+  y -= this.viewportTop;
+
+  if (x < 0 || x >= this.viewportWidth ||
+      y < 0 || y >= this.viewportWidth) {
+    return;
+  }
+
   this._pInst.fill(col);
   this._pInst.rect(x * this.squareSize, y * this.squareSize,
                    this.squareSize, this.squareSize);
@@ -238,8 +268,10 @@ Grid.prototype._drawBaseSquare = function(x, y) {
 };
 
 Grid.prototype._drawComplete = function() {
-  for (var i = 0; i < this.width; i++) {
-    for (var j = 0; j < this.width; j++) {
+  var top = this.viewportTop;
+  var left = this.viewportLeft;
+  for (var i = left; i < left + this.viewportWidth; i++) {
+    for (var j = top; j < top + this.viewportWidth; j++) {
       this._drawBaseSquare(i, j);
     }
   }
