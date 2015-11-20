@@ -154,19 +154,28 @@ Grid.prototype.makeWellConnected = function() {
   var needsGroupId = function(x, y) {
     return grid[x][y] === self.EMPTY && groups[x][y] === undefined;
   };
-  var visitSquare = function(x, y, groupId) {
-    if (needsGroupId(x, y)) {
-      explore(x, y, groupId);
-    } else if (grid[x][y] === self.FILLED) {
-      groupEdges[groupId].edges.push([x, y]);
-    }
-  };
   var explore = function(x, y, groupId) {
+    var visitQueue = [{x: x, y: y}];
+    var visitSquare = function(x, y) {
+      if (needsGroupId(x, y)) {
+        groups[x][y] = groupId;
+        visitQueue.push({x: x, y: y});
+      } else if (grid[x][y] === self.FILLED) {
+        groupEdges[groupId].edges.push([x, y]);
+      }
+    };
+
     groups[x][y] = groupId;
-    if (x > 0) visitSquare(x - 1, y, groupId);
-    if (x < self.width - 1) visitSquare(x + 1, y, groupId);
-    if (y > 0) visitSquare(x, y - 1, groupId);
-    if (y < self.width - 1) visitSquare(x, y + 1, groupId);
+    while (visitQueue.length) {
+      var coord = visitQueue.shift();
+      x = coord.x;
+      y = coord.y;
+
+      if (x > 0) visitSquare(x - 1, y);
+      if (x < self.width - 1) visitSquare(x + 1, y);
+      if (y > 0) visitSquare(x, y - 1);
+      if (y < self.width - 1) visitSquare(x, y + 1);
+    }
   };
 
   for (i = 0; i < this.width; i++) {
