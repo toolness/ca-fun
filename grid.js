@@ -294,7 +294,6 @@ Grid.prototype._drawComplete = function() {
 
 Grid.prototype.draw = function() {
   if (this._needsFullRedraw) {
-    console.log("FULL REDRAW");
     this._drawComplete();
     this._needsFullRedraw = false;
   } else {
