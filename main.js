@@ -1,5 +1,4 @@
 var SQUARE_SIZE = 8;
-var VIEWPORT_WIDTH = 32;
 var SMOOTH_THRESHOLD = 0.6;
 
 var seed;
@@ -10,6 +9,7 @@ var agents = [];
 var fields = {
   generations: document.getElementById("generations"),
   size: document.getElementById('size'),
+  viewportSize: document.getElementById('viewport-size'),
   connected: document.getElementById("connected"),
   showGrid: document.getElementById("show-grid"),
   filledColor: document.getElementById("filled-color"),
@@ -28,6 +28,7 @@ function regenerate() {
     showGrid: fields.showGrid.checked,
     filledColor: fields.filledColor.value,
     emptyColor: fields.emptyColor.value,
+    viewportSize: grid.viewportWidth,
     size: grid.width
   }));
 
@@ -65,7 +66,7 @@ function createGrid() {
     showGrid: fields.showGrid.checked,
     filledColor: '#' + fields.filledColor.value,
     emptyColor: '#' + fields.emptyColor.value,
-    viewportWidth: VIEWPORT_WIDTH,
+    viewportWidth: parseInt(fields.viewportSize.value),
     edgeValue: Grid.FILLED,
     squareSize: SQUARE_SIZE
   });
@@ -81,6 +82,8 @@ function setup() {
   fields.generations.value = Querystring.getInt('generations',
                                                 fields.generations.value);
   fields.size.value = Querystring.getInt('size', fields.size.value);
+  fields.viewportSize.value = Querystring.getInt('viewportSize',
+                                                 fields.viewportSize.value);
   fields.connected.checked = Querystring.getBool('connected',
                                                  fields.connected.checked);
   fields.showGrid.checked = Querystring.getBool('showGrid',
@@ -96,6 +99,14 @@ function setup() {
 
   seed = Querystring.getInt('seed', Date.now());
   fields.seed.value = seed;
+
+  fields.viewportSize.onchange = function() {
+    fields.size.value = Math.max(fields.size.value, fields.viewportSize.value);
+  };
+
+  fields.size.onchange = function() {
+    fields.viewportSize.value = Math.min(fields.size.value, fields.viewportSize.value);
+  };
 
   document.getElementById("regenerate").onclick = function() {
     grid = createGrid();
