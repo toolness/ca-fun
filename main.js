@@ -12,6 +12,8 @@ var fields = {
   size: document.getElementById('size'),
   connected: document.getElementById("connected"),
   showGrid: document.getElementById("show-grid"),
+  filledColor: document.getElementById("filled-color"),
+  emptyColor: document.getElementById("empty-color"),
   seed: document.getElementById('random-seed')
 };
 
@@ -24,6 +26,8 @@ function regenerate() {
     connected: fields.connected.checked,
     generations: generations,
     showGrid: fields.showGrid.checked,
+    filledColor: fields.filledColor.value,
+    emptyColor: fields.emptyColor.value,
     size: grid.width
   }));
 
@@ -59,6 +63,8 @@ function createGrid() {
   return new Grid({
     width: parseInt(fields.size.value),
     showGrid: fields.showGrid.checked,
+    filledColor: '#' + fields.filledColor.value,
+    emptyColor: '#' + fields.emptyColor.value,
     viewportWidth: VIEWPORT_WIDTH,
     edgeValue: Grid.FILLED,
     squareSize: SQUARE_SIZE
@@ -66,6 +72,12 @@ function createGrid() {
 }
 
 function setup() {
+  fields.filledColor.jscolor.fromString(
+    Querystring.get('filledColor', fields.filledColor.value)
+  );
+  fields.emptyColor.jscolor.fromString(
+    Querystring.get('emptyColor', fields.emptyColor.value)
+  );
   fields.generations.value = Querystring.getInt('generations',
                                                 fields.generations.value);
   fields.size.value = Querystring.getInt('size', fields.size.value);
