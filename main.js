@@ -11,6 +11,7 @@ var fields = {
   generations: document.getElementById("generations"),
   size: document.getElementById('size'),
   connected: document.getElementById("connected"),
+  showGrid: document.getElementById("show-grid"),
   seed: document.getElementById('random-seed')
 };
 
@@ -22,6 +23,7 @@ function regenerate() {
     seed: seed,
     connected: fields.connected.checked,
     generations: generations,
+    showGrid: fields.showGrid.checked,
     size: grid.width
   }));
 
@@ -49,11 +51,14 @@ function regenerate() {
   planningFollower = Agent.placeRandomly(grid, 'red');
   planningFollower.setState(AgentStateFollowMouseWithPlanning);
   agents.push(planningFollower);
+
+  grid.resizeCanvas();
 }
 
 function createGrid() {
   return new Grid({
     width: parseInt(fields.size.value),
+    showGrid: fields.showGrid.checked,
     viewportWidth: VIEWPORT_WIDTH,
     edgeValue: Grid.FILLED,
     squareSize: SQUARE_SIZE
@@ -66,6 +71,8 @@ function setup() {
   fields.size.value = Querystring.getInt('size', fields.size.value);
   fields.connected.checked = Querystring.getBool('connected',
                                                  fields.connected.checked);
+  fields.showGrid.checked = Querystring.getBool('showGrid',
+                                                fields.showGrid.checked);
 
   grid = createGrid();
 

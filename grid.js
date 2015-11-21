@@ -5,10 +5,17 @@ function Grid(options) {
   this.viewportLeft = 0;
   this.edgeValue = options.edgeValue;
   this.squareSize = options.squareSize;
+  this.showGrid = options.showGrid;
+  this.filledColor = options.filledColor || 'white';
+  this.emptyColor = options.emptyColor || 'black';
+  this.pixelWidth = this.viewportWidth * this.squareSize;
   this._pInst = options.pInst || window;
   this._lastMouseX = undefined;
   this._lastMouseY = undefined;
   this._drawnSquares = [];
+
+  if (this.showGrid === undefined) this.showGrid = true;
+  if (this.showGrid) this.pixelWidth++;
 
   Object.defineProperties(this, {
     mouseX: {
@@ -81,8 +88,11 @@ Grid.prototype.clear = function() {
 };
 
 Grid.prototype.createCanvas = function() {
-  this._pInst.createCanvas(this.viewportWidth * this.squareSize + 1,
-                           this.viewportWidth * this.squareSize + 1);
+  this._pInst.createCanvas(this.pixelWidth, this.pixelWidth);
+};
+
+Grid.prototype.resizeCanvas = function() {
+  this._pInst.resizeCanvas(this.pixelWidth, this.pixelWidth);
 };
 
 Grid.prototype.createRandom = function() {
@@ -267,6 +277,12 @@ Grid.prototype._drawSquare = function(x, y, col) {
   }
 
   this._pInst.fill(col);
+  if (this.showGrid) {
+    this._pInst.strokeWeight(1);
+    this._pInst.stroke(0, 0, 0);
+  } else {
+    this._pInst.noStroke();
+  }
   this._pInst.rect(x * this.squareSize, y * this.squareSize,
                    this.squareSize, this.squareSize);
 };
@@ -275,9 +291,9 @@ Grid.prototype._drawBaseSquare = function(x, y) {
   var col;
 
   if (this._grid[x][y] == this.FILLED) {
-    col = this._pInst.color(255, 255, 255);
+    col = this._pInst.color(this.filledColor);
   } else {
-    col = this._pInst.color(0, 0, 0);
+    col = this._pInst.color(this.emptyColor);
   }
   this._drawSquare(x, y, col);
 };
