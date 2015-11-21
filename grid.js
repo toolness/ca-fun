@@ -95,8 +95,10 @@ Grid.prototype.resizeCanvas = function() {
   this._pInst.resizeCanvas(this.pixelWidth, this.pixelWidth);
 };
 
-Grid.prototype.createRandom = function() {
+Grid.prototype.createRandom = function(fillPercent) {
   var grid = [];
+
+  fillPercent = fillPercent || 0.5;
 
   for (var i = 0; i < this.width; i++) {
     grid.push([]);
@@ -105,7 +107,8 @@ Grid.prototype.createRandom = function() {
           (i == 0 || j == 0 || i == this.width - 1 || j == this.width - 1)) {
         grid[i].push(this.edgeValue);
       } else {
-        grid[i].push(this._pInst.random() > 0.5 ? this.FILLED : this.EMPTY);
+        grid[i].push(this._pInst.random() > (1 - fillPercent)
+                     ? this.FILLED : this.EMPTY);
       }
     }
   }

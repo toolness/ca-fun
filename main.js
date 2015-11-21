@@ -12,6 +12,7 @@ var fields = {
   viewportSize: document.getElementById('viewport-size'),
   connected: document.getElementById("connected"),
   showGrid: document.getElementById("show-grid"),
+  filledPercent: document.getElementById("filled-percent"),
   filledColor: document.getElementById("filled-color"),
   emptyColor: document.getElementById("empty-color"),
   seed: document.getElementById('random-seed')
@@ -27,6 +28,7 @@ function regenerate() {
     generations: generations,
     showGrid: fields.showGrid.checked,
     filledColor: fields.filledColor.value,
+    filledPercent: fields.filledPercent.value,
     emptyColor: fields.emptyColor.value,
     viewportSize: grid.viewportWidth,
     size: grid.width
@@ -34,7 +36,7 @@ function regenerate() {
 
   randomSeed(seed);
 
-  grid.createRandom();
+  grid.createRandom(parseFloat(fields.filledPercent.value));
 
   for (var k = 0; k < generations; k++) {
     grid.smooth(SMOOTH_THRESHOLD);
@@ -78,6 +80,10 @@ function setup() {
   );
   fields.emptyColor.jscolor.fromString(
     Querystring.get('emptyColor', fields.emptyColor.value)
+  );
+  fields.filledPercent.value = Querystring.getFloat(
+    'filledPercent',
+    fields.filledPercent.value
   );
   fields.generations.value = Querystring.getInt('generations',
                                                 fields.generations.value);

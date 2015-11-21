@@ -8,6 +8,12 @@ var Querystring = {
            ? (defaultValue || "")
            : decodeURIComponent(results[1].replace(/\+/g, " "));
   },
+  getFloat: function(name, defaultValue) {
+    var result = parseFloat(this.get(name));
+    if (isNaN(result))
+      return defaultValue;
+    return result;
+  },
   getInt: function(name, defaultValue) {
     var result = parseInt(this.get(name));
     if (isNaN(result))
