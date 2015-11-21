@@ -1,4 +1,5 @@
 var SQUARE_SIZE = 8;
+var VIEWPORT_WIDTH = 32;
 var DEFAULT_WIDTH = 32;
 var SMOOTH_THRESHOLD = 0.6;
 
@@ -9,6 +10,10 @@ var agents = [];
 
 function regenerate() {
   var generations = parseInt(document.getElementById("generations").value);
+  var size = parseInt(document.getElementById("size").value);
+
+  if (size !== grid.width)
+    grid = createGrid(size);
 
   randomSeed(seed);
 
@@ -53,13 +58,18 @@ function getIntQuerystringParam(name, defaultValue) {
   return result;
 }
 
-function setup() {
-  grid = new Grid({
-    width: getIntQuerystringParam('width', DEFAULT_WIDTH),
-    viewportWidth: 32,
+function createGrid(size) {
+  console.log("new grid");
+  return new Grid({
+    width: size,
+    viewportWidth: VIEWPORT_WIDTH,
     edgeValue: Grid.FILLED,
     squareSize: SQUARE_SIZE
   });
+}
+
+function setup() {
+  grid = createGrid(getIntQuerystringParam('width', DEFAULT_WIDTH));
 
   grid.createCanvas();
 
