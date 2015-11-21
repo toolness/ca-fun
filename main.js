@@ -10,6 +10,7 @@ var agents = [];
 var fields = {
   generations: document.getElementById("generations"),
   size: document.getElementById('size'),
+  connected: document.getElementById("connected"),
   seed: document.getElementById('random-seed')
 };
 
@@ -19,6 +20,8 @@ function regenerate() {
 
   shareLink.setAttribute('href', Querystring.serialize({
     seed: seed,
+    connected: fields.connected.checked,
+    generations: generations,
     size: grid.width
   }));
 
@@ -30,7 +33,7 @@ function regenerate() {
     grid.smooth(SMOOTH_THRESHOLD);
   }
 
-  if (document.getElementById("connected").checked)
+  if (fields.connected.checked)
     grid.makeWellConnected();
 
   agents = [];
@@ -58,7 +61,11 @@ function createGrid() {
 }
 
 function setup() {
+  fields.generations.value = Querystring.getInt('generations',
+                                                fields.generations.value);
   fields.size.value = Querystring.getInt('size', fields.size.value);
+  fields.connected.checked = Querystring.getBool('connected',
+                                                 fields.connected.checked);
 
   grid = createGrid();
 
