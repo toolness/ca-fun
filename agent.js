@@ -183,6 +183,7 @@ function AgentStateFollowMouseWithPlanning(agent, pInst) {
 
   return {
     move: function() {
+      if (grid.mouseX === undefined) return;
       if (goalX != grid.mouseX || goalY != grid.mouseY)
         makeNewPlan();
       continueFollowingPlan();

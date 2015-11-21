@@ -6,8 +6,8 @@ function Grid(options) {
   this.edgeValue = options.edgeValue;
   this.squareSize = options.squareSize;
   this._pInst = options.pInst || window;
-  this._lastMouseX = 0;
-  this._lastMouseY = 0;
+  this._lastMouseX = undefined;
+  this._lastMouseY = undefined;
   this._drawnSquares = [];
 
   Object.defineProperties(this, {
@@ -20,7 +20,10 @@ function Grid(options) {
           x = this._pInst.mouseX + leftOfs;
         } else if (this._pInst.touchIsDown) {
           x = this._pInst.touchX + leftOfs;
+        } else if (x === undefined) {
+          return x;
         }
+
         this._lastMouseX = x;
         return Math.floor(x / this.squareSize);
       }
@@ -34,7 +37,10 @@ function Grid(options) {
           y = this._pInst.mouseY + topOfs;
         } else if (this._pInst.touchIsDown) {
           y = this._pInst.touchY + topOfs;
+        } else if (y === undefined) {
+          return y;
         }
+
         this._lastMouseY = y;
         return Math.floor(y / this.squareSize);
       }

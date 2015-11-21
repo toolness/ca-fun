@@ -79,8 +79,7 @@ function setup() {
   fields.seed.value = seed;
 
   document.getElementById("regenerate").onclick = function() {
-    if (parseInt(fields.size.value) !== grid.width)
-      grid = createGrid();
+    grid = createGrid();
 
     if (document.getElementById("new-seed").checked) {
       seed = Date.now();
