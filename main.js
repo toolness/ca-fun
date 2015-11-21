@@ -1,6 +1,5 @@
 var SQUARE_SIZE = 8;
 var VIEWPORT_WIDTH = 32;
-var DEFAULT_WIDTH = 32;
 var SMOOTH_THRESHOLD = 0.6;
 
 var seed;
@@ -10,10 +9,6 @@ var agents = [];
 
 function regenerate() {
   var generations = parseInt(document.getElementById("generations").value);
-  var size = parseInt(document.getElementById("size").value);
-
-  if (size !== grid.width)
-    grid = createGrid(size);
 
   randomSeed(seed);
 
@@ -59,9 +54,8 @@ function getIntQuerystringParam(name, defaultValue) {
 }
 
 function createGrid(size) {
-  console.log("new grid");
   return new Grid({
-    width: size,
+    width: parseInt(size),
     viewportWidth: VIEWPORT_WIDTH,
     edgeValue: Grid.FILLED,
     squareSize: SQUARE_SIZE
@@ -69,7 +63,12 @@ function createGrid(size) {
 }
 
 function setup() {
-  grid = createGrid(getIntQuerystringParam('width', DEFAULT_WIDTH));
+  var sizeField = document.getElementById('size');
+  var seedField = document.getElementById('random-seed');
+
+  sizeField.value = getIntQuerystringParam('size', sizeField.value);
+
+  grid = createGrid(sizeField.value);
 
   grid.createCanvas();
 
@@ -78,17 +77,19 @@ function setup() {
   document.body.appendChild(document.querySelector("footer"));
 
   seed = getIntQuerystringParam('seed', Date.now());
-
-  var seedField = document.getElementById('random-seed');
   seedField.value = seed;
 
   document.getElementById("regenerate").onclick = function() {
+    if (sizeField.value !== grid.width)
+      grid = createGrid(sizeField.value);
+
     if (document.getElementById("new-seed").checked) {
       seed = Date.now();
       seedField.value = seed;
     } else {
       seed = parseInt(seedField.value);
     }
+
     regenerate();
   };
 
