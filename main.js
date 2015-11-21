@@ -11,7 +11,7 @@ function regenerate() {
   var generations = parseInt(document.getElementById("generations").value);
   var shareLink = document.getElementById('share');
 
-  shareLink.setAttribute('href', serializeQuerystring({
+  shareLink.setAttribute('href', Querystring.serialize({
     seed: seed,
     size: grid.width
   }));
@@ -55,7 +55,7 @@ function setup() {
   var sizeField = document.getElementById('size');
   var seedField = document.getElementById('random-seed');
 
-  sizeField.value = getIntQuerystringParam('size', sizeField.value);
+  sizeField.value = Querystring.getInt('size', sizeField.value);
 
   grid = createGrid(sizeField.value);
 
@@ -65,7 +65,7 @@ function setup() {
   // so it's at the bottom of the page.
   document.body.appendChild(document.querySelector("footer"));
 
-  seed = getIntQuerystringParam('seed', Date.now());
+  seed = Querystring.getInt('seed', Date.now());
   seedField.value = seed;
 
   document.getElementById("regenerate").onclick = function() {
