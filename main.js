@@ -9,6 +9,12 @@ var agents = [];
 
 function regenerate() {
   var generations = parseInt(document.getElementById("generations").value);
+  var shareLink = document.getElementById('share');
+
+  shareLink.setAttribute('href', serializeQuerystring({
+    seed: seed,
+    size: grid.width
+  }));
 
   randomSeed(seed);
 
@@ -51,6 +57,12 @@ function getIntQuerystringParam(name, defaultValue) {
   if (isNaN(result))
     return defaultValue;
   return result;
+}
+
+function serializeQuerystring(params) {
+  return '?' + Object.keys(params).map(function(name) {
+    return name + '=' + encodeURIComponent(params[name]);
+  }).join('&');
 }
 
 function createGrid(size) {
