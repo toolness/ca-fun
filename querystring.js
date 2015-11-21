@@ -14,6 +14,12 @@ var Querystring = {
       return defaultValue;
     return result;
   },
+  getBool: function(name, defaultValue) {
+    var result = this.get(name);
+    if (result == 'true') return true;
+    if (result == 'false') return false;
+    return defaultValue;
+  },
   serialize: function(params) {
     return '?' + Object.keys(params).map(function(name) {
       return name + '=' + encodeURIComponent(params[name]);

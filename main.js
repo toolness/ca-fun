@@ -7,8 +7,14 @@ var grid;
 var planningFollower;
 var agents = [];
 
+var fields = {
+  generations: document.getElementById("generations"),
+  size: document.getElementById('size'),
+  seed: document.getElementById('random-seed')
+};
+
 function regenerate() {
-  var generations = parseInt(document.getElementById("generations").value);
+  var generations = parseInt(fields.generations.value);
   var shareLink = document.getElementById('share');
 
   shareLink.setAttribute('href', Querystring.serialize({
@@ -42,9 +48,9 @@ function regenerate() {
   agents.push(planningFollower);
 }
 
-function createGrid(size) {
+function createGrid() {
   return new Grid({
-    width: parseInt(size),
+    width: parseInt(fields.size.value),
     viewportWidth: VIEWPORT_WIDTH,
     edgeValue: Grid.FILLED,
     squareSize: SQUARE_SIZE
@@ -52,12 +58,9 @@ function createGrid(size) {
 }
 
 function setup() {
-  var sizeField = document.getElementById('size');
-  var seedField = document.getElementById('random-seed');
+  fields.size.value = Querystring.getInt('size', fields.size.value);
 
-  sizeField.value = Querystring.getInt('size', sizeField.value);
-
-  grid = createGrid(sizeField.value);
+  grid = createGrid();
 
   grid.createCanvas();
 
@@ -66,17 +69,17 @@ function setup() {
   document.body.appendChild(document.querySelector("footer"));
 
   seed = Querystring.getInt('seed', Date.now());
-  seedField.value = seed;
+  fields.seed.value = seed;
 
   document.getElementById("regenerate").onclick = function() {
-    if (sizeField.value !== grid.width)
-      grid = createGrid(sizeField.value);
+    if (parseInt(fields.size.value) !== grid.width)
+      grid = createGrid();
 
     if (document.getElementById("new-seed").checked) {
       seed = Date.now();
-      seedField.value = seed;
+      fields.seed.value = seed;
     } else {
-      seed = parseInt(seedField.value);
+      seed = parseInt(fields.seed.value);
     }
 
     regenerate();
