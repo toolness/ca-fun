@@ -34,8 +34,10 @@ function DogAgentState(agent, pInst, options) {
         }
       } else {
         if (lastOwnerPos) {
-          if (!followState.move())
-            searchState.move();
+          followState.move();
+          if (!followState.hasPlan()) {
+            lastOwnerPos = null;
+          }
         } else {
           searchState.move();
         }

@@ -70,47 +70,15 @@ function AgentStateFollow(agent, pInst, options) {
   var getTargetPosition = options.getTargetPosition || function() {
     return {x: grid.mouseX, y: grid.mouseY};
   };
-
-  return {
-    move: function() {
-      var grid = agent.grid;
-      var target = getTargetPosition();
-      var x = agent.x;
-      var y = agent.y;
-
-      if (target.x > x &&
-          grid.getSquare(x + 1, y) == grid.EMPTY) {
-        agent.x++;
-        return true;
-      } else if (target.x < x &&
-                 grid.getSquare(x - 1, y) == grid.EMPTY) {
-        agent.x--;
-        return true;
-      } else if (target.y > y &&
-                 grid.getSquare(x, y + 1) == grid.EMPTY) {
-        agent.y++;
-        return true;
-      } else if (target.y < y &&
-                 grid.getSquare(x, y - 1) == grid.EMPTY) {
-        agent.y--;
-        return true;
-      }
-      return false;
-    }
-  };
-}
-
-function AgentStateFollowMouseWithPlanning(agent, pInst) {
   var grid = agent.grid;
-  var goalX = 0;
-  var goalY = 0;
+  var goalX, goalY;
   var plan = [];
 
   function distanceToGoal(x, y) {
     return Math.abs(goalX - x) + Math.abs(goalY - y);
   }
 
-  function makeNewPlan() {
+  function makeNewPlan(newTargetPosition) {
     var plans, bestPlan, nextPlan, exploredSquares;
 
     function explorePlan(plan) {
@@ -141,8 +109,8 @@ function AgentStateFollowMouseWithPlanning(agent, pInst) {
       if (y > 0) exploreSquare(x, y - 1);
     }
 
-    goalX = grid.mouseX;
-    goalY = grid.mouseY;
+    goalX = newTargetPosition.x;
+    goalY = newTargetPosition.y;
 
     plans = [{
       minDistanceToGoal: distanceToGoal(agent.x, agent.y),
@@ -191,13 +159,15 @@ function AgentStateFollowMouseWithPlanning(agent, pInst) {
     agent.y = coord.y;
   }
 
-  makeNewPlan();
-
   return {
+    hasPlan: function() {
+      return plan.length > 0;
+    },
     move: function() {
-      if (grid.mouseX === undefined) return;
-      if (goalX != grid.mouseX || goalY != grid.mouseY)
-        makeNewPlan();
+      var targetPos = getTargetPosition();
+      if (!targetPos || targetPos.x === undefined) return;
+      if (goalX != targetPos.x || goalY != targetPos.y)
+        makeNewPlan(targetPos);
       continueFollowingPlan();
     }
   };

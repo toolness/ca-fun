@@ -49,7 +49,7 @@ function regenerate() {
   agents = [];
 
   player = Agent.placeRandomly(grid, 'red');
-  player.setState(AgentStateFollowMouseWithPlanning);
+  player.setState(AgentStateFollow);
 
   dog = Agent.placeRandomly(grid, 'violet');
   dog.setState(DogAgentState, {
