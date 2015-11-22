@@ -16,8 +16,8 @@ Agent.prototype.draw = function() {
   this.grid.drawSquare(this.x, this.y, this.color);
 };
 
-Agent.prototype.setState = function(stateConstructor) {
-  this._state = new stateConstructor(this, this._pInst);
+Agent.prototype.setState = function(stateConstructor, options) {
+  this._state = new stateConstructor(this, this._pInst, options);
 };
 
 Agent.placeRandomly = function(grid, col, pInst) {
@@ -64,26 +64,38 @@ function AgentStateDrunk(agent, pInst) {
   };
 }
 
-function AgentStateFollowMouse(agent, pInst) {
+function AgentStateFollow(agent, pInst, options) {
+  options = options || {};
+
+  var getTargetPosition = options.getTargetPosition || function() {
+    return {x: grid.mouseX, y: grid.mouseY};
+  };
+
   return {
     move: function() {
       var grid = agent.grid;
+      var target = getTargetPosition();
       var x = agent.x;
       var y = agent.y;
 
-      if (grid.mouseX > x &&
+      if (target.x > x &&
           grid.getSquare(x + 1, y) == grid.EMPTY) {
         agent.x++;
-      } else if (grid.mouseX < x &&
+        return true;
+      } else if (target.x < x &&
                  grid.getSquare(x - 1, y) == grid.EMPTY) {
         agent.x--;
-      } else if (grid.mouseY > y &&
+        return true;
+      } else if (target.y > y &&
                  grid.getSquare(x, y + 1) == grid.EMPTY) {
         agent.y++;
-      } else if (grid.mouseY < y &&
+        return true;
+      } else if (target.y < y &&
                  grid.getSquare(x, y - 1) == grid.EMPTY) {
         agent.y--;
+        return true;
       }
+      return false;
     }
   };
 }

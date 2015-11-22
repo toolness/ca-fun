@@ -3,7 +3,8 @@ var SMOOTH_THRESHOLD = 0.6;
 
 var seed;
 var grid;
-var planningFollower;
+var player;
+var dog;
 var agents = [];
 
 var fields = {
@@ -47,17 +48,16 @@ function regenerate() {
 
   agents = [];
 
-  var drunkard = Agent.placeRandomly(grid, 'blue');
-  drunkard.setState(AgentStateDrunk);
-  agents.push(drunkard);
+  player = Agent.placeRandomly(grid, 'red');
+  player.setState(AgentStateFollowMouseWithPlanning);
 
-  var follower = Agent.placeRandomly(grid, 'violet');
-  follower.setState(AgentStateFollowMouse);
-  agents.push(follower);
+  dog = Agent.placeRandomly(grid, 'violet');
+  dog.setState(DogAgentState, {
+    owner: player
+  });
 
-  planningFollower = Agent.placeRandomly(grid, 'red');
-  planningFollower.setState(AgentStateFollowMouseWithPlanning);
-  agents.push(planningFollower);
+  agents.push(dog);
+  agents.push(player);
 
   grid.resizeCanvas();
 }
@@ -132,8 +132,8 @@ function setup() {
 
 function draw() {
   grid.setViewportTopLeft(
-    Math.floor(planningFollower.y / grid.viewportWidth) * grid.viewportWidth,
-    Math.floor(planningFollower.x / grid.viewportWidth) * grid.viewportWidth
+    Math.floor(player.y / grid.viewportWidth) * grid.viewportWidth,
+    Math.floor(player.x / grid.viewportWidth) * grid.viewportWidth
   );
 
   grid.draw();
