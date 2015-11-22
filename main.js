@@ -5,7 +5,8 @@ var seed;
 var grid;
 var player;
 var dog;
-var agents = [];
+var treats;
+var agents;
 
 var fields = {
   generations: document.getElementById("generations"),
@@ -47,14 +48,20 @@ function regenerate() {
     grid.makeWellConnected();
 
   agents = [];
+  treats = [];
 
   player = Agent.placeRandomly(grid, 'red');
   player.setState(AgentStateFollow);
 
   dog = Agent.placeRandomly(grid, 'violet');
   dog.setState(DogAgentState, {
-    owner: player
+    owner: player,
+    treats: treats
   });
+
+  for (k = 0; k < 10; k++) {
+    treats.push(Agent.placeRandomly(grid, 'yellow'));
+  }
 
   agents.push(dog);
   agents.push(player);
@@ -137,6 +144,10 @@ function draw() {
   );
 
   grid.draw();
+
+  treats.forEach(function(treat) {
+    treat.draw();
+  });
 
   agents.forEach(function(agent) {
     agent.draw();

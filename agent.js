@@ -71,7 +71,7 @@ function AgentStateFollow(agent, pInst, options) {
     return {x: grid.mouseX, y: grid.mouseY};
   };
   var grid = agent.grid;
-  var goalX, goalY;
+  var goalX, goalY, lastKnownX, lastKnownY;
   var plan = [];
 
   function distanceToGoal(x, y) {
@@ -166,9 +166,12 @@ function AgentStateFollow(agent, pInst, options) {
     move: function() {
       var targetPos = getTargetPosition();
       if (!targetPos || targetPos.x === undefined) return;
-      if (goalX != targetPos.x || goalY != targetPos.y)
+      if (goalX != targetPos.x || goalY != targetPos.y ||
+          lastKnownX != agent.x || lastKnownY != agent.y)
         makeNewPlan(targetPos);
       continueFollowingPlan();
+      lastKnownX = agent.x;
+      lastKnownY = agent.y;
     }
   };
 }
