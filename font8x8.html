@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+html, body {
+  font-family: sans-serif;
+}
+</style>
+<title>Font8x8 Test</title>
+<h1>Font8x8 Test</h1>
+<script src="vendor/p5.js"></script>
+<script src="font8x8.js"></script>
+<script>
+var CHARS_PER_ROW = 16;
+
+function setup() {
+  createCanvas(CHARS_PER_ROW * 8,
+               Math.ceil(font8x8_basic.length / CHARS_PER_ROW) * 8);
+  background("black");
+  colorMode(HSB);
+}
+
+function draw() {
+  var row;
+
+  for (var i = 0; i < font8x8_basic.length; i++) {
+    row = Math.floor(i / CHARS_PER_ROW);
+    drawFont8x8((i % CHARS_PER_ROW ) * 8, row * 8, i,
+                color(frameCount % 360, 100, 100));
+  }
+}
+</script>
