@@ -1,7 +1,10 @@
 function DogAgentState(agent, pInst, options) {
   var MIN_DIST = 2;
+  var MAX_STAMINA = 50;
+  var STAMINA_REGEN_RATE = 2;
   var owner = options.owner;
-  var plan = [];
+  var stamina = MAX_STAMINA;
+  var staminaState = 'active';
   var lastOwnerPos;
   var searchState = new AgentStateDrunk(agent, pInst);
   var followState = new AgentStateFollow(agent, pInst, {
@@ -23,11 +26,22 @@ function DogAgentState(agent, pInst, options) {
           lastOwnerPos = null;
         }
       }
-      if (lastOwnerPos) {
-        if (!followState.move())
-          return searchState.move();
+      if (staminaState == 'resting') {
+        stamina += STAMINA_REGEN_RATE;
+        if (stamina >= MAX_STAMINA) {
+          stamina = MAX_STAMINA;
+          staminaState = 'active';
+        }
       } else {
-        return searchState.move();
+        if (lastOwnerPos) {
+          if (!followState.move())
+            searchState.move();
+        } else {
+          searchState.move();
+        }
+        stamina--;
+        if (stamina == 0)
+          staminaState = 'resting';
       }
     }
   }
