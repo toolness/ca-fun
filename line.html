@@ -10,6 +10,7 @@ html, body {
 <h1>Line Test</h1>
 <script src="vendor/p5.js"></script>
 <script src="grid.js"></script>
+<script src="ray.js"></script>
 <script>
 var grid;
 var lineEndpoints = [];
@@ -38,51 +39,12 @@ function setup() {
     lineEndpoints.push([0, i]);
 }
 
-function drawLine(grid, x1, y1, x2, y2, col) {
-  var slope = Math.abs((y1 - y2) / (x1 - x2));
-  var y = y1;
-  var x = x1;
-  var xDir = (x2 >= x1) ? 1 : -1;
-  var yDir = (y2 >= y1) ? 1 : -1;
-  var isObstructed = false;
-  var ensureNotObstructed = function(x, y) {
-    if (grid.getSquare(Math.floor(x), Math.floor(y)) === grid.EMPTY) {
-      return true;
-    }
-    isObstructed = true;
-    return false;
-  }
-
-  if (Math.abs(slope) === Infinity) {
-    while (y != y2 && ensureNotObstructed(x, y)) {
-      grid.drawSquare(x, y, col);
-      y += yDir;
-    }
-  } else if (slope <= 1) {
-    while (x != x2 && ensureNotObstructed(x, y)) {
-      grid.drawSquare(x, Math.floor(y), col);
-      y += slope * yDir;
-      x += xDir;
-    }
-  } else if (slope > 1) {
-    while (y != y2 && ensureNotObstructed(x, y)) {
-      grid.drawSquare(Math.floor(x), y, col);
-      x += 1 / slope * xDir;
-      y += yDir;
-    }
-  }
-
-  if (!isObstructed && ensureNotObstructed(x2, y2)) {
-    grid.drawSquare(x2, y2, col);
-  }
-}
-
 function draw() {
   var i = frameCount % (lineEndpoints.length);
   var endpoint = lineEndpoints[i];
 
   grid.draw();
-  drawLine(grid, grid.width / 2, grid.width / 2, endpoint[0], endpoint[1],
+  Ray.draw(grid, grid.width / 2, grid.width / 2, endpoint[0], endpoint[1],
            "crimson");
 }
 </script>
