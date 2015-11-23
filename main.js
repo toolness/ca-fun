@@ -5,6 +5,7 @@ var seed;
 var grid;
 var player;
 var dog;
+var skateboarder;
 var treats;
 var agents;
 
@@ -53,10 +54,14 @@ function regenerate() {
   player = Agent.placeRandomly(grid, 'red');
   player.setState(AgentStateFollow);
 
+  skateboarder = Agent.placeRandomly(grid, 'blue');
+  skateboarder.setState(AgentStateDrunk);
+
   dog = Agent.placeRandomly(grid, 'violet');
   dog.setState(DogAgentState, {
     owner: player,
-    treats: treats
+    treats: treats,
+    stayAwayFrom: skateboarder
   });
 
   for (k = 0; k < 10; k++) {
@@ -65,6 +70,7 @@ function regenerate() {
 
   agents.push(dog);
   agents.push(player);
+  agents.push(skateboarder);
 
   grid.resizeCanvas();
 }
