@@ -1,7 +1,7 @@
 function AgentStateStayAwayFrom(agent, pInst, options) {
   options = options || {};
 
-  var DEFAULT_MIN_DIST_FROM_TARGET = 6;
+  var DEFAULT_MIN_DIST_FROM_TARGET = 10;
   var getTargetPosition = options.getTargetPosition || function() {
     return {x: agent.grid.mouseX, y: agent.grid.mouseY};
   };
