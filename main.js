@@ -11,6 +11,8 @@ var agents;
 
 var fields = {
   generations: document.getElementById("generations"),
+  enableCA: document.getElementById('enable-ca'),
+  enableMaze: document.getElementById('enable-maze'),
   size: document.getElementById('size'),
   viewportSize: document.getElementById('viewport-size'),
   connected: document.getElementById("connected"),
@@ -21,14 +23,42 @@ var fields = {
   seed: document.getElementById('random-seed')
 };
 
-function regenerate() {
+function buildMazeMap() {
+  var wallGrid = new WallGrid(grid.width / 8 + 1);
+  var mazeBuilder = new DepthFirstMazeBuilder(wallGrid);
+
+  mazeBuilder.build();
+  wallGrid.toGrid(grid, 7);
+}
+
+function buildCellularAutomataMap() {
   var generations = parseInt(fields.generations.value);
+
+  grid.createRandom(parseFloat(fields.filledPercent.value));
+
+  for (var k = 0; k < generations; k++) {
+    grid.smooth(SMOOTH_THRESHOLD);
+  }
+}
+
+function ensureGridBordersAreFilled() {
+  for (var i = 0; i < grid.width; i++) {
+    grid.setSquare(i, 0, grid.FILLED);
+    grid.setSquare(i, grid.width - 1, grid.FILLED);
+    grid.setSquare(0, i, grid.FILLED);
+    grid.setSquare(grid.width - 1, i, grid.FILLED);
+  }
+}
+
+function regenerate() {
   var shareLink = document.getElementById('share');
 
   shareLink.setAttribute('href', Querystring.serialize({
     seed: seed,
     connected: fields.connected.checked,
-    generations: generations,
+    enableCA: fields.enableCA.checked,
+    enableMaze: fields.enableMaze.checked,
+    generations: fields.generations.value,
     showGrid: fields.showGrid.checked,
     filledColor: fields.filledColor.value,
     filledPercent: fields.filledPercent.value,
@@ -39,11 +69,10 @@ function regenerate() {
 
   randomSeed(seed);
 
-  grid.createRandom(parseFloat(fields.filledPercent.value));
+  if (fields.enableCA.checked) buildCellularAutomataMap();
+  if (fields.enableMaze.checked) buildMazeMap();
 
-  for (var k = 0; k < generations; k++) {
-    grid.smooth(SMOOTH_THRESHOLD);
-  }
+  ensureGridBordersAreFilled();
 
   if (fields.connected.checked)
     grid.makeWellConnected();
@@ -107,6 +136,10 @@ function setup() {
                                                  fields.connected.checked);
   fields.showGrid.checked = Querystring.getBool('showGrid',
                                                 fields.showGrid.checked);
+  fields.enableCA.checked = Querystring.getBool('enableCA',
+                                                fields.enableCA.checked);
+  fields.enableMaze.checked = Querystring.getBool('enableMaze',
+                                                  fields.enableMaze.checked);
 
   grid = createGrid();
 

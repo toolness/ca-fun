@@ -3,33 +3,52 @@ function WallGrid(width) {
   var self = {
     cells: cells,
     width: width,
-    draw: function(cellWidth) {
+    toGrid: function(grid, cellWidth) {
+      self.draw(cellWidth, function(x1, y1, x2, y2) {
+        var i;
+
+        if (y1 == y2) {
+          // It's a horizontal line.
+          for (i = x1; i < x2; i++) {
+            grid.setSquare(i, y1, grid.FILLED);
+          }
+        } else {
+          // It's a vertical line.
+          for (i = y1; i < y2; i++) {
+            grid.setSquare(x1, i, grid.FILLED);
+          }
+        }
+      });
+    },
+    draw: function(cellWidth, line) {
+      line = line || window.line;
+
       for (var i = 0; i < width; i++) {
         for (var j = 0; j < width; j++) {
           var cell = cells[i][j];
           if (cell.top) {
             line(i * cellWidth,
-             j * cellWidth,
-             (i + 1) * cellWidth,
-             j * cellWidth);
+                 j * cellWidth,
+                 (i + 1) * cellWidth,
+                 j * cellWidth);
           }
           if (cell.bottom) {
             line(i * cellWidth,
-             (j + 1) * cellWidth,
-             (i + 1) * cellWidth,
-             (j + 1) * cellWidth);
+                 (j + 1) * cellWidth,
+                 (i + 1) * cellWidth,
+                 (j + 1) * cellWidth);
           }
           if (cell.left) {
             line(i * cellWidth,
-             j * cellWidth,
-             i * cellWidth,
-             (j + 1) * cellWidth);
+                 j * cellWidth,
+                 i * cellWidth,
+                 (j + 1) * cellWidth);
           }
           if (cell.right) {
             line((i + 1) * cellWidth,
-             j * cellWidth,
-             (i + 1) * cellWidth,
-             (j + 1) * cellWidth);
+                 j * cellWidth,
+                 (i + 1) * cellWidth,
+                 (j + 1) * cellWidth);
           }
         }
       }
@@ -70,6 +89,9 @@ function DepthFirstMazeBuilder(wallGrid) {
   };
 
   return {
+    build: function() {
+      while (this.buildOne());
+    },
     buildOne: function() {
       if (path.length == 0) return false;
 

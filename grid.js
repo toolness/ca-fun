@@ -67,6 +67,11 @@ Grid.prototype.getSquare = function(x, y) {
 };
 
 Grid.prototype.setSquare = function(x, y, value) {
+  var w = this.width;
+
+  x = (w + x) % w;
+  y = (w + y) % w;
+
   if (this._grid[x][y] !== value) {
     this._grid[x][y] = value;
     this._drawnSquares.push({x: x, y: y});
