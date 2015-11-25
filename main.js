@@ -104,6 +104,12 @@ function regenerate() {
   agents.push(skateboarder);
 
   grid.resizeCanvas();
+
+  if (grid.viewportWidth < grid.width) {
+    document.getElementById('explore-instructions').style.display = 'block';
+  } else {
+    document.getElementById('explore-instructions').style.display = 'none';
+  }
 }
 
 function createGrid() {
