@@ -1,6 +1,7 @@
 function Grid(options) {
   this.width = options.width;
   this.viewportWidth = options.viewportWidth || this.width;
+  this.outsideMargin = 24;
   this.viewportTop = 0;
   this.viewportLeft = 0;
   this.edgeValue = options.edgeValue;
@@ -23,9 +24,9 @@ function Grid(options) {
         var x = this._lastMouseX;
         var leftOfs = this.viewportLeft * this.squareSize;
 
-        if (this._pInst.mouseIsPressed) {
+        if (this._pInst.mouseIsPressed && this._inBounds('mouse')) {
           x = this._pInst.mouseX + leftOfs;
-        } else if (this._pInst.touchIsDown) {
+        } else if (this._pInst.touchIsDown && this._inBounds('touch')) {
           x = this._pInst.touchX + leftOfs;
         } else if (x === undefined) {
           return x;
@@ -40,9 +41,9 @@ function Grid(options) {
         var y = this._lastMouseY;
         var topOfs = this.viewportTop * this.squareSize;
 
-        if (this._pInst.mouseIsPressed) {
+        if (this._pInst.mouseIsPressed && this._inBounds('mouse')) {
           y = this._pInst.mouseY + topOfs;
-        } else if (this._pInst.touchIsDown) {
+        } else if (this._pInst.touchIsDown && this._inBounds('touch')) {
           y = this._pInst.touchY + topOfs;
         } else if (y === undefined) {
           return y;
@@ -60,6 +61,13 @@ function Grid(options) {
 Grid.EMPTY = Grid.prototype.EMPTY = 0;
 
 Grid.FILLED = Grid.prototype.FILLED = 1;
+
+Grid.prototype._inBounds = function(prop) {
+  return (this._pInst[prop + 'X'] > -this.outsideMargin &&
+          this._pInst[prop + 'X'] < this.pixelWidth + this.outsideMargin &&
+          this._pInst[prop + 'Y'] > -this.outsideMargin &&
+          this._pInst[prop + 'Y'] < this.pixelWidth + this.outsideMargin);
+}
 
 Grid.prototype.getSquare = function(x, y) {
   var w = this.width;
