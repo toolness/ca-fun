@@ -24,11 +24,11 @@ var fields = {
 };
 
 function buildMazeMap() {
-  var wallGrid = new WallGrid(grid.width / 8 + 1);
+  var wallGrid = new WallGrid(grid.width / 4);
   var mazeBuilder = new DepthFirstMazeBuilder(wallGrid);
 
   mazeBuilder.build();
-  wallGrid.toGrid(grid, 7);
+  wallGrid.toGrid(grid, 4);
 }
 
 function buildCellularAutomataMap() {
