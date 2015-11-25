@@ -33,17 +33,31 @@ input.jscolor {
 input.jscolor {
   border: 1px solid black;
 }
+
+.legend {
+  display: inline-block;
+  height: 8px;
+  width: 8px;
+  background: gray;
+  margin-bottom: 2px;
+  margin-right: 2px;
+}
+
+.legend.human { background: red; }
+.legend.dog { background: violet; }
+.legend.treat { background: yellow; }
+.legend.skateboarder { background: blue; }
 </style>
 <title>Procedurally-Generated Dog Simulator</title>
 <h1>Procedurally-Generated Dog Simulator</h1>
 <main>
 <h2>Instructions</h2>
 <p>
-  Click or tap anywhere on the map to make the HUMAN visit it.
+  Click or tap anywhere on the map to make the <i class="legend human"></i>HUMAN visit it.
 </p>
 <p>
-  The DOG likes the HUMAN but it likes TREATS even more. It also fears
-  the SKATEBOARDER.
+  The <i class="legend dog"></i>DOG likes the human but it likes <i class="legend treat"></i>TREATS even more. It also fears
+  the <i class="legend skateboarder"></i>SKATEBOARDER.
 </p>
 <p>
   Click or tap just past the edges of the map to explore new areas.
