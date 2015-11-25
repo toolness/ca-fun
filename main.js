@@ -57,8 +57,8 @@ function regenerate() {
   shareLink.setAttribute('href', Querystring.serialize({
     seed: seed,
     connected: fields.connected.checked,
-    enableCA: fields.enableCA.checked,
-    enableMaze: fields.enableMaze.checked,
+    ca: fields.enableCA.checked,
+    maze: fields.enableMaze.checked,
     treats: fields.numTreats.value,
     generations: fields.generations.value,
     showGrid: fields.showGrid.checked,
@@ -140,9 +140,9 @@ function setup() {
                                                  fields.connected.checked);
   fields.showGrid.checked = Querystring.getBool('showGrid',
                                                 fields.showGrid.checked);
-  fields.enableCA.checked = Querystring.getBool('enableCA',
+  fields.enableCA.checked = Querystring.getBool('ca',
                                                 fields.enableCA.checked);
-  fields.enableMaze.checked = Querystring.getBool('enableMaze',
+  fields.enableMaze.checked = Querystring.getBool('maze',
                                                   fields.enableMaze.checked);
 
   grid = createGrid();
