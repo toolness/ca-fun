@@ -8,10 +8,36 @@ html, body {
 
 body {
   margin-left: 24px;
+  margin-right: 24px;
+}
+
+main, section, aside {
+  border-top: 1px solid black;
+  vertical-align: top;
+  padding-right: 2em;
+  padding-bottom: 1em;
+  display: inline-block;
+}
+
+section, aside {
+  width: 20em;
+}
+
+input[type="range"],
+input[type="number"],
+input.jscolor {
+  display: block;
+  width: 100%;
+}
+
+input.jscolor {
+  border: 1px solid black;
 }
 </style>
 <title>Procedurally-Generated Dog Simulator</title>
 <h1>Procedurally-Generated Dog Simulator</h1>
+<main>
+<h2>Instructions</h2>
 <p>
   Click or tap anywhere on the map to make the HUMAN visit it.
 </p>
@@ -22,7 +48,9 @@ body {
 <p>
   Click or tap just past the edges of the map to explore new areas.
 </p>
-<footer>
+<div id="canvas-holder"></div>
+</main>
+<section id="options">
 <h2>Map Options</h2>
 <p>
   <label for="num-treats">Treats</label>
@@ -88,6 +116,8 @@ body {
 </p>
 <p><button id="regenerate">Regenerate map</button></p>
 <p><a id="share" href="#">Link to this map</a></p>
+</section>
+<aside>
 <h2>About</h2>
 <p>
   This experiment uses:
@@ -103,7 +133,7 @@ body {
 <p>
   Learn more at <a href="http://github.com/toolness/ca-fun">GitHub</a>.
 </p>
-</footer>
+</aside>
 <script src="vendor/p5.js"></script>
 <script src="vendor/jscolor.js"></script>
 <script src="querystring.js"></script>

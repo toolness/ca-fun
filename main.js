@@ -149,9 +149,9 @@ function setup() {
 
   grid.createCanvas();
 
-  // p5 appends the canvas at the document, so we'll re-position the footer
-  // so it's at the bottom of the page.
-  document.body.appendChild(document.querySelector("footer"));
+  // p5 appends the canvas at the document, so we'll re-position it.
+  document.getElementById("canvas-holder")
+    .appendChild(document.querySelector("canvas"));
 
   seed = Querystring.getInt('seed', Date.now());
   fields.seed.value = seed;
