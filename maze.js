@@ -79,7 +79,8 @@ function WallGrid(width) {
 
 // This is based on the DFS algorithm described in
 // https://en.wikipedia.org/wiki/Maze_generation_algorithm.
-function DepthFirstMazeBuilder(wallGrid) {
+function DepthFirstMazeBuilder(wallGrid, random) {
+  random = random || window.random;
   var path = [wallGrid.cells[0][0]];
   var OPPOSITES = {
     left: 'right',
