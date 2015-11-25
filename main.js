@@ -11,6 +11,7 @@ var agents;
 
 var fields = {
   generations: document.getElementById("generations"),
+  numTreats: document.getElementById('num-treats'),
   enableCA: document.getElementById('enable-ca'),
   enableMaze: document.getElementById('enable-maze'),
   size: document.getElementById('size'),
@@ -58,6 +59,7 @@ function regenerate() {
     connected: fields.connected.checked,
     enableCA: fields.enableCA.checked,
     enableMaze: fields.enableMaze.checked,
+    treats: fields.numTreats.value,
     generations: fields.generations.value,
     showGrid: fields.showGrid.checked,
     filledColor: fields.filledColor.value,
@@ -93,7 +95,7 @@ function regenerate() {
     stayAwayFrom: skateboarder
   });
 
-  for (k = 0; k < 10; k++) {
+  for (k = 0; k < parseInt(fields.numTreats.value); k++) {
     treats.push(Agent.placeRandomly(grid, 'yellow'));
   }
 
@@ -127,6 +129,8 @@ function setup() {
     'filledPercent',
     fields.filledPercent.value
   );
+  fields.numTreats.value = Querystring.getInt('treats',
+                                              fields.numTreats.value);
   fields.generations.value = Querystring.getInt('generations',
                                                 fields.generations.value);
   fields.size.value = Querystring.getInt('size', fields.size.value);
