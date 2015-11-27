@@ -14,7 +14,8 @@ var SEED = Date.now();
 var WIDTH = 16;
 var CELL_WIDTH = 16;
 
-// TODO: Why doesn't setting this to true generate the same maze?
+// Why doesn't setting this to true generate the same maze?
+// See https://github.com/processing/p5.js/issues/1135.
 var BUILD_INCREMENTALLY = false;
 
 var sketch2d = new p5(function(p) {
@@ -70,7 +71,6 @@ var sketch3d = new p5(function(p) {
       p.push();
       p.translate(x1, y1, 0);
       if (x1 === x2) {
-        // TODO: File a bug re: third param silently failing if undefined
         p.translate(-wallSize, 0, 0);
         p.box(wallDepth, wallSize, wallSize);
       } else {
@@ -83,7 +83,9 @@ var sketch3d = new p5(function(p) {
     if (BUILD_INCREMENTALLY) {
       if (!mazeBuilder.buildOne()) p.noLoop();
     } else {
-      // TODO: Not sure why this doesn't work... File a bug?
+      // This doesn't work.
+      // See https://github.com/processing/p5.js/issues/1136.
+
       // p.noLoop();
     }
   };
