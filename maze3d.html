@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maze Generation Test</title>
+<h1>Maze Generation Test</h1>
+<p>
+  This is an attempt at implementing <a href="https://en.wikipedia.org/wiki/Maze_generation_algorithm#Depth-first_search">Depth-first maze generation</a>.
+</p>
+<p><a href=".">Go back</a></p>
+<script src="vendor/p5.js"></script>
+<script src="maze.js"></script>
+<script>
+var SEED = Date.now();
+var WIDTH = 16;
+var CELL_WIDTH = 16;
+
+// TODO: Why doesn't setting this to true generate the same maze?
+var BUILD_INCREMENTALLY = false;
+
+var sketch2d = new p5(function(p) {
+  var wallGrid, mazeBuilder;
+
+  p.setup = function setup() {
+    p.createCanvas(WIDTH * CELL_WIDTH + 1, WIDTH * CELL_WIDTH + 1);
+    p.randomSeed(SEED);
+
+    wallGrid = new WallGrid(WIDTH);
+    mazeBuilder = DepthFirstMazeBuilder(wallGrid, p.random.bind(p));
+
+    if (!BUILD_INCREMENTALLY) {
+      mazeBuilder.build();
+    }
+  };
+
+  p.draw = function draw() {
+    p.background("black");
+    p.stroke("white");
+
+    wallGrid.draw(CELL_WIDTH, p.line.bind(p));
+
+    if (BUILD_INCREMENTALLY) {
+      if (!mazeBuilder.buildOne()) p.noLoop();
+    } else p.noLoop();
+  };
+});
+
+var sketch3d = new p5(function(p) {
+  var wallGrid, mazeBuilder;
+  var translateOfs = -WIDTH * CELL_WIDTH  / 2;
+  var wallSize = CELL_WIDTH / 2;
+  var wallDepth = 1;
+
+  p.setup = function() {
+    p.createCanvas(WIDTH * CELL_WIDTH, WIDTH * CELL_WIDTH, p.WEBGL);
+    p.randomSeed(SEED);
+
+    wallGrid = new WallGrid(WIDTH);
+    mazeBuilder = DepthFirstMazeBuilder(wallGrid, p.random.bind(p));
+
+    if (!BUILD_INCREMENTALLY) {
+      mazeBuilder.build();
+    }
+  };
+
+  p.draw = function() {
+    p.background(200);
+    p.scale(3);
+    p.translate(translateOfs, translateOfs, 0);
+    wallGrid.draw(CELL_WIDTH, function(x1, y1, x2, y2) {
+      p.push();
+      p.translate(x1, y1, 0);
+      if (x1 === x2) {
+        // TODO: File a bug re: third param silently failing if undefined
+        p.translate(-wallSize, 0, 0);
+        p.box(wallDepth, wallSize, wallSize);
+      } else {
+        p.translate(0, -wallSize, 0);
+        p.box(wallSize, wallDepth, wallSize);
+      }
+      p.pop();
+    });
+
+    if (BUILD_INCREMENTALLY) {
+      if (!mazeBuilder.buildOne()) p.noLoop();
+    } else {
+      // TODO: Not sure why this doesn't work... File a bug?
+      // p.noLoop();
+    }
+  };
+});
+
+</script>
