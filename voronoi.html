@@ -26,8 +26,14 @@ function setup() {
     grid.smooth(0.5);
   }
 
+  grid.makeWellConnected();
+
   for (var i = 0; i < grid.width; i++) {
     for (var j = 0; j < grid.width; j++) {
+      if (grid.getSquare(i, j) == grid.getSquare(i + 1, j) ==
+          grid.getSquare(i - 1, j) == grid.getSquare(i, j - 1) ==
+          grid.getSquare(i, j + 1))
+        continue;
       points.push({
         x: i * grid.squareSize + random(grid.squareSize) * JITTER,
         y: j * grid.squareSize + random(grid.squareSize) * JITTER,
