@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voronoi Fun</title>
+<h1>Voronoi Fun</h1>
+<script src="vendor/p5.js"></script>
+<script src="grid.js"></script>
+<script>
+var JITTER = 0.9;
+
+var grid;
+var points = [];
+var currentRow = 0;
+
+function setup() {
+  grid = new Grid({
+    width: 32,
+    squareSize: 8,
+    edgeValue: Grid.EMPTY
+  });
+
+  grid.createCanvas();
+  grid.createRandom(0.6);
+
+  for (var i = 0; i < 3; i++) {
+    grid.smooth(0.5);
+  }
+
+  for (var i = 0; i < grid.width; i++) {
+    for (var j = 0; j < grid.width; j++) {
+      points.push({
+        x: i * grid.squareSize + random(grid.squareSize) * JITTER,
+        y: j * grid.squareSize + random(grid.squareSize) * JITTER,
+        color: grid.getSquare(i, j) === grid.EMPTY
+               ? color(0, 0, 150)
+               : color(
+                   0,
+                   Math.floor(random(150, 255)),
+                   0
+                 )
+      });
+    }
+  }
+}
+
+function distanceSquared(x1, y1, x2, y2) {
+  var xDelta = x1 - x2;
+  var yDelta = y1 - y2;
+
+  return xDelta * xDelta + yDelta * yDelta;
+}
+
+function draw() {
+  if (currentRow >= grid.pixelWidth) return noLoop();
+
+  for (var i = 0; i < grid.pixelWidth; i++) {
+    var closestPoint = null;
+    var closestDistanceSquared = Infinity;
+
+    points.forEach(function(point) {
+      var d = distanceSquared(i, currentRow, point.x, point.y);
+      if (d < closestDistanceSquared) {
+        closestPoint = point;
+        closestDistanceSquared = d;
+      }
+    });
+
+    set(i, currentRow, closestPoint.color);
+  }
+
+  updatePixels();
+  currentRow++;
+}
+</script>
